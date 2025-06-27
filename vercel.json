@@ -14,7 +14,7 @@
   ],
   "functions": {
     "api/index.py": {
-       "includeFiles": "templates/**", "alembic.ini", "alembic/**"
+       "includeFiles": "{templates/**","alembic.ini","alembic/**}"
     }
   }
 }
