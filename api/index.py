@@ -171,7 +171,10 @@ def update_neocities_gallery(db: Session):
 
 @api_router.get("/", response_class=HTMLResponse)
 async def dashboard(request: Request, _=Depends(get_current_user)):
-    return templates.TemplateResponse("dashboard.html", {"request": request})
+    return templates.TemplateResponse("dashboard.html", {
+        "request": request
+        "color_tags": [e.value for e in ColorTag]
+    })
 
 @api_router.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
