@@ -147,28 +147,25 @@ def update_neocities_gallery(db: Session):
         logger.warning("Neocities credentials not set. Skipping update.")
         return "Neocities credentials not set. Skipped update."
 
-    logger.info("Fetching images for Neocities gallery update...")
-    images = db.query(ImageRecord).order_by(ImageRecord.year_made.desc(), ImageRecord.color_tag).all()
-    
-    logger.info(f"Found {len(images)} images. Generating HTML...")
-    # Using a standalone Jinja environment to ensure path is correct
-    env = Environment(loader=FileSystemLoader(os.path.join(os.path.dirname(__file__), '../templates')))
-    template = env.get_template("neocities_gallery_template.html")
-    gallery_html = template.render({"images": images})
-    
-    logger.info("Uploading to Neocities...")
+    logger.info("Starting Neocities gallery update process...")
     try:
+        logger.info("Fetching images for Neocities gallery update...")
+        images = db.query(ImageRecord).order_by(ImageRecord.year_made.desc(), ImageRecord.color_tag).all()
+        logger.info(f"Found {len(images)} images. Generating HTML...")
+        env = Environment(loader=FileSystemLoader(os.path.join(os.path.dirname(__file__), '../templates')))
+        template = env.get_template("neocities_gallery_template.html")
+        gallery_html = template.render({"images": images})
+        logger.info("Uploading to Neocities...")
         response = requests.post(
             "https://neocities.org/api/upload",
             files={'gallery.html': gallery_html},
             headers={'Authorization': f'Bearer {NEOCITIES_API_KEY}'}
         )
         response.raise_for_status()
-        logger.info("Neocities gallery updated successfully.")
+    except Exception as e:
         return "Neocities gallery updated successfully."
-    except requests.exceptions.RequestException as e:
-        error_text = e.response.text if e.response else str(e)
-        logger.error(f"ERROR: Failed to upload to Neocities: {error_text}")
+        error_text = getattr(e, 'response', {}).text if isinstance(e, requests.exceptions.RequestException) and getattr(e, 'response', None) is not None else str(e)
+        logger.error(f"ERROR: Failed to update Neocities gallery: {error_text}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to update Neocities: {error_text}")
 
 @api_router.get("/", response_class=HTMLResponse)
