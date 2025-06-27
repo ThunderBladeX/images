@@ -77,7 +77,7 @@
                 <h2>✧ Digital Canvas ✧</h2>
                 <p class="gallery-intro">Welcome to the Gallery! Click any artwork to see it larger. Art is sorted by year, then by color.</p>
                 <div class="gallery-grid">
-                    <!-- DYNAMIC CONTENT START -->
+                    
                     {% for image in images %}
                     <div class="artwork-item">
                         {% if image.is_sensitive %}
@@ -93,7 +93,7 @@
                         <p class="artwork-date">Created: {{ image.year_made }}</p>
                     </div>
                     {% endfor %}
-                    <!-- DYNAMIC CONTENT END -->
+                    
                 </div>
             </section>
         </main>
@@ -116,7 +116,7 @@
         var captionText = document.getElementById("caption");
         function openModal(src, alt, caption) { modal.style.display = "block"; modalImg.src = src; modalImg.alt = alt; captionText.innerHTML = caption; }
         function closeModal() { modal.style.display = "none"; }
-        function addCherryStains() { /* ... cherry stain code ... */ }
+        function addCherryStains() { const container = document.querySelector('.container'); const stain = document.createElement('div'); stain.className = 'cherry-stain'; stain.style.position = 'absolute'; stain.style.left = Math.random() * 100 + '%'; stain.style.top = Math.random() * 100 + '%'; stain.style.opacity = Math.random() * 0.3; container.appendChild(stain); }
         for (let i = 0; i < 20; i++) { addCherryStains(); }
         window.onclick = function(event) { if (event.target == modal) { closeModal(); } }
         document.addEventListener('keydown', function(event) { if (event.key === "Escape") { closeModal(); } });
