@@ -190,7 +190,7 @@ async def startup_event():
 
 @api_router.post("/token")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    if not (secrets.compare_digest(form_data.username, AUTH_USERNAME) and verify_password(form_data.password, get_password_hash(AUTH_PASSWORD))):
+    if not (secrets.compare_digest(form_data.username, AUTH_USERNAME) and verify_password(form_data.password, hashed_auth_password)):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
