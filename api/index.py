@@ -131,7 +131,7 @@ def upload_to_supabase(file_content: bytes, filename: str) -> str:
     if not supabase:
         raise HTTPException(status_code=500, detail="Supabase client not initialized")
     try:
-        supabase.storage.from_(SUPABASE_BUCKET).upload(filename, file_content, {"content-type": "image/webp"})
+        supabase.storage.from_(SUPABASE_BUCKET).upload(filename, file_content, {"content-type": file.content_type})
         return supabase.storage.from_(SUPABASE_BUCKET).get_public_url(filename)
     except Exception as e:
         if 'Duplicate' in str(e):
