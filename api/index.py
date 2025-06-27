@@ -191,8 +191,6 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
-@api_router.get("/", response_class=HTMLResponse)
-
 @api_router.get("/api/images")
 async def get_images(db: Session = Depends(get_db), _=Depends(get_current_user)):
     images = db.query(ImageRecord).order_by(ImageRecord.uploaded_at.desc()).all()
