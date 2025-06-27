@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alathea's Art Gallery - Roadside Haven</title>
+    <link href="https://fonts.cdnfonts.com/css/americana" rel="stylesheet">
+    <style>
+        :root {
+            --campfire-smoke: #5D5D5D;
+            --copper-penny: #AD6A5A;
+            --wildflower-lilac: #C8A2C8;
+            --porch-swing: #F5E6E3;
+            --prairie-grass: #8A9A5B;
+            --cherry-cola: #8B3E3E;
+            --sun-denim: #7890A8;
+            --cherry-cola-blush: #A35F5F;
+            --sun-faded-denim: #A0B0C0;
+        }
+        body { background-color: var(--porch-swing); color: var(--campfire-smoke); font-family: 'Courier New', monospace; margin: 0; padding: 0; overflow-x: hidden; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23F5E6E3" /><path d="M0,0 L100,100 M100,0 L0,100" stroke="%23C8A2C810" stroke-width="0.5"/></svg>'); }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; position: relative; overflow-x:hidden }
+        header::after { content: ""; position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); width: 120px; height: 20px; background-color: var(--porch-swing); background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="20" viewBox="0 0 120 20"><text x="5" y="15" font-family="monospace" font-size="20" fill="%23AD6A5A"> * * * * *</text></svg>'); }
+        .main-nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-top: 20px; }
+        .nav-link { color: var(--copper-penny); text-decoration: none; padding: 8px 20px; border: 2px solid transparent; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); font-size: 0.95em; position: relative; font-weight: 500; border-radius: 25px; background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1)); }
+        .nav-link::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(45deg, var(--wildflower-lilac), var(--copper-penny)); border-radius: 25px; opacity: 0; transition: opacity 0.4s ease; z-index: -1; }
+        .nav-link:hover::before, .nav-link.active-link::before { opacity: 0.2; }
+        .nav-link:hover, .nav-link.active-link { color: var(--cherry-cola); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(139, 62, 62, 0.3); }
+        .heart-glasses { display: inline-block; transform: rotate(10deg); font-size: 1.2em; color: var(--cherry-cola); animation: heartBeat 2s ease-in-out infinite; filter: }
+        @keyframes heartBeat { 0%, 100% { transform: rotate(10deg) scale(1); } 50% { transform: rotate(10deg) scale(1.1); } }
+        header { text-align: center; padding-top: 20px; padding-bottom: 30px; margin-bottom: 30px; border-bottom: 3px dotted var(--copper-penny); position: relative; }
+        header p { padding-left: 30px; padding-right: 30px; }
+        h1 { font-family: 'Americana BT', 'Courier New', cursive; color: var(--cherry-cola); font-size: 2.5rem; margin: 0; text-shadow: 2px 2px 0px var(--porch-swing), 3px 3px 0px var(--copper-penny); letter-spacing: 2px; }
+        h2 { font-family: 'Americana BT', 'Courier New', cursive; color: var(--sun-denim); border-bottom: 1px solid var(--wildflower-lilac); padding-bottom: 5px; text-align: center; margin-top: 40px; margin-bottom: 20px; }
+        a { color: var(--cherry-cola); text-decoration: none; transition: all 0.3s ease; }
+        a:hover { color: var(--copper-penny); text-shadow: 0 0 3px var(--wildflower-lilac); }
+        .skating-animation { position: fixed; bottom: 10px; left: -100px; animation: skate 15s linear infinite; z-index: 100; font-size: 2em; }
+        @keyframes skate { 0% { left: -100px; } 100% { left: 100vw; } }
+        footer { margin-top: 50px; text-align: center; padding: 20px; border-top: 1px solid var(--wildflower-lilac); font-size: 0.8em; color: var(--campfire-smoke); }
+        .gallery-intro { text-align: center; margin-bottom: 30px; font-size: 1.1em; color: var(--campfire-smoke); font-style: italic; }
+        .gallery-grid { display: flex; flex-wrap: wrap; gap: 25px; justify-content: center; padding: 10px 0; }
+        .artwork-item { background: white; padding: 15px; border: 1px solid var(--wildflower-lilac); border-radius: 5px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 0 0 5px var(--porch-swing); width: calc(33.333% - 30px); min-width: 250px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .artwork-item:hover { transform: translateY(-5px) rotate(-1deg); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15), 0 0 0 5px var(--porch-swing); }
+        .artwork-item img { max-width: 100%; height: auto; display: block; margin-bottom: 10px; border: 1px solid var(--campfire-smoke_translucent, rgba(93, 93, 93, 0.2)); aspect-ratio: 4 / 3; object-fit: cover; }
+        .artwork-title { font-family: 'Americana BT', 'Courier New', cursive; font-size: 1.2em; color: var(--cherry-cola); margin: 10px 0 5px 0; }
+        .artwork-description { font-size: 0.85em; color: var(--campfire-smoke); margin-bottom: 10px; flex-grow: 1; }
+        .artwork-date { font-size: 0.75em; color: var(--sun-denim); font-style: italic; }
+        .cherry-stain { display: inline-block; width: 15px; height: 15px; background: var(--cherry-cola); border-radius: 50%; opacity: 0.5; margin: 0 5px; }
+        .modal { display: none; position: fixed; z-index: 1001; padding-top: 50px; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.85); }
+        .modal-content { margin: auto; display: block; max-width: 80%; max-height: 80vh; }
+        .modal-caption { margin: 15px auto; display: block; width: 80%; max-width: 700px; text-align: center; color: var(--porch-swing); font-size: 1.1em; font-family: 'Americana BT', 'Courier New', cursive; }
+        .close-modal { position: absolute; top: 15px; right: 35px; color: #f1f1f1; font-size: 40px; font-weight: bold; transition: 0.3s; cursor: pointer; }
+        .close-modal:hover, .close-modal:focus { color: var(--wildflower-lilac); text-decoration: none; }
+        @media (max-width: 768px) { .artwork-item { width: calc(50% - 20px); } }
+        @media (max-width: 480px) { .artwork-item { width: calc(100% - 20px); min-width: unset; } .modal-content { max-width: 95%; } }
+        .sensitive-content-wrapper { position: relative; width: 100%; cursor: pointer; overflow: hidden; border-radius: 3px; }
+        .sensitive-content-wrapper img { filter: blur(15px); transition: filter 0.3s ease-in-out; }
+        .sensitive-content-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--cherry-cola); background-color: rgba(245, 230, 227, 0.85); padding: 10px 20px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; font-family: 'Americana BT', sans-serif; text-align: center; pointer-events: none; transition: opacity 0.3s ease-in-out; border: 2px solid var(--cherry-cola-blush); }
+    </style>
+</head>
+<body>
+    <div class="skating-animation">🛼 ✨</div>
+    <div class="container">
+        <header>
+            <h1>✧ Alathea's Roadside Haven ✧</h1>
+            <p><span class="heart-glasses">♡</span> Pull up a chair, grab a virtual cup of cocoa, and enjoy my art <span class="heart-glasses">♡</span></p>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About Me</a>
+                <a href="gallery.html" class="nav-link active-link">Art Gallery</a>
+                <a href="journal.html" class="nav-link">Road Journal</a>
+                <a href="playlist.html" class="nav-link">Mixtapes</a>
+            </nav>
+        </header>
+
+        <main>
+            <section id="art-gallery-section">
+                <h2>✧ Digital Canvas ✧</h2>
+                <p class="gallery-intro">Welcome to the Gallery! Click any artwork to see it larger. Art is sorted by year, then by color.</p>
+                <div class="gallery-grid">
+                    <!-- DYNAMIC CONTENT START -->
+                    {% for image in images %}
+                    <div class="artwork-item">
+                        {% if image.is_sensitive %}
+                        <div class="sensitive-content-wrapper" onclick="openModal('{{ image.supabase_url }}', 'Artwork: {{ image.title | e }}', '{{ image.title | e }}')">
+                            <img src="{{ image.supabase_url }}" alt="Artwork: {{ image.title | e }}">
+                            <div class="sensitive-content-overlay">16+</div>
+                        </div>
+                        {% else %}
+                        <img src="{{ image.supabase_url }}" alt="Artwork: {{ image.title | e }}" onclick="openModal('{{ image.supabase_url }}', this.alt, '{{ image.title | e }}')">
+                        {% endif %}
+                        <h3 class="artwork-title">{{ image.title }}</h3>
+                        <p class="artwork-description">{{ image.description or '' }}</p>
+                        <p class="artwork-date">Created: {{ image.year_made }}</p>
+                    </div>
+                    {% endfor %}
+                    <!-- DYNAMIC CONTENT END -->
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>© Roadside Haven Motel & Art Gallery, Est. Whenever You Needed It Most</p>
+            <p><small>No refunds • Reality escape services available 24/7 • Follow the wildflower trail home</small></p>
+        </footer>
+    </div>
+
+    <div id="myModal" class="modal">
+        <span class="close-modal" onclick="closeModal()">×</span>
+        <img class="modal-content" id="modalImage">
+        <div id="caption" class="modal-caption"></div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() { /* ... sparkle code ... */ });
+        var modal = document.getElementById("myModal");
+        var modalImg = document.getElementById("modalImage");
+        var captionText = document.getElementById("caption");
+        function openModal(src, alt, caption) { modal.style.display = "block"; modalImg.src = src; modalImg.alt = alt; captionText.innerHTML = caption; }
+        function closeModal() { modal.style.display = "none"; }
+        function addCherryStains() { /* ... cherry stain code ... */ }
+        for (let i = 0; i < 20; i++) { addCherryStains(); }
+        window.onclick = function(event) { if (event.target == modal) { closeModal(); } }
+        document.addEventListener('keydown', function(event) { if (event.key === "Escape") { closeModal(); } });
+    </script>
+</body>
+</html>
