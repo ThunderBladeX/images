@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Manager Dashboard</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; color: #1c1e21; margin: 0; padding: 2rem; }
+        .container { max-width: 1200px; margin: auto; }
+        h1, h2 { color: #333; }
+        .grid { display: grid; grid-template-columns: 300px 1fr; gap: 2rem; }
+        .form-card, .image-card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        input, select, textarea { width: 100%; padding: 0.75rem; border-radius: 6px; border: 1px solid #ddd; box-sizing: border-box; margin-bottom: 1rem; }
+        textarea { min-height: 80px; }
+        button { background-color: #1877f2; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: background-color 0.2s; }
+        button:hover { background-color: #166fe5; }
+        .image-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+        .image-item { border: 1px solid #ddd; border-radius: 6px; overflow: hidden; position: relative; }
+        .image-item img { width: 100%; height: 150px; object-fit: cover; display: block; }
+        .image-info { padding: 0.75rem; }
+        .image-title { font-weight: bold; margin: 0 0 0.5rem; }
+        .image-meta { font-size: 0.8rem; color: #666; }
+        .actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+        .copy-btn, .delete-btn { font-size: 0.8rem; padding: 0.3rem 0.6rem; border-radius: 4px; flex-grow: 1; }
+        .delete-btn { background-color: #e44d3a; }
+        .delete-btn:hover { background-color: #c83b2a; }
+        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #333; color: white; padding: 10px 20px; border-radius: 5px; opacity: 0; transition: opacity 0.5s; z-index: 1000; }
+        .checkbox-label { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
+        .checkbox-label input { width: auto; margin-bottom: 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Alathea's Art Manager</h1>
+        <div class="grid">
+            <div class="form-card">
+                <h2>Upload New Artwork</h2>
+                <form action="/upload" method="post" enctype="multipart/form-data">
+                    <label for="file">Image File</label>
+                    <input type="file" id="file" name="file" accept="image/*" required>
+                    
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" required>
+                    
+                    <label for="year_made">Year Made</label>
+                    <input type="number" id="year_made" name="year_made" placeholder="e.g., 2023" required>
+                    
+                    <label for="color_tag">Color Tag</label>
+                    <select id="color_tag" name="color_tag" required>
+                        {% for color in color_options %}
+                        <option value="{{ color }}">{{ color.title() }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label for="description">Description (optional)</label>
+                    <textarea id="description" name="description"></textarea>
+
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="is_sensitive" value="true"> Is Sensitive Content (16+)?
+                    </label>
+
+                    <button type="submit">Upload & Update Gallery</button>
+                </form>
+                <hr style="margin: 2rem 0; border: 1px solid #eee;">
+                <h2>Manual Sync</h2>
+                <button onclick="manualUpdate()">Force Update Neocities Gallery</button>
+            </div>
+            
+            <div class="image-card">
+                <h2>Uploaded Images ({{ images|length }})</h2>
+                <div class="image-gallery">
+                    {% for image in images %}
+                    <div class="image-item">
+                        <img src="{{ image.supabase_url }}" alt="{{ image.title }}">
+                        <div class="image-info">
+                            <p class="image-title">{{ image.title }}</p>
+                            <p class="image-meta">{{ image.year_made }} | <span style="color:{{image.color_tag}};">●</span> {{ image.color_tag }}</p>
+                            <div class="actions">
+                                <button class="copy-btn" onclick="copyToClipboard('{{ image.markdown_url }}')">Copy MD</button>
+                                <button class="delete-btn" onclick="deleteImage({{ image.id }})">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="toast"></div>
+
+    <script>
+        const toast = document.getElementById('toast');
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.style.opacity = 1;
+            setTimeout(() => { toast.style.opacity = 0; }, 3000);
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Markdown URL copied!');
+            }, (err) => {
+                showToast('Failed to copy!');
+                console.error('Could not copy text: ', err);
+            });
+        }
+
+        function deleteImage(imageId) {
+            if (!confirm('Are you sure you want to delete this image? This will also update Neocities.')) {
+                return;
+            }
+            fetch(`/delete/${imageId}`, {
+                method: 'DELETE',
+            })
+            .then(response => response.json())
+            .then(data => {
+                showToast(data.message || 'Image deleted.');
+                // Refresh the page to show the updated list
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred.');
+            });
+        }
+        
+        function manualUpdate() {
+            showToast('Triggering Neocities update...');
+            fetch('/update-gallery', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => showToast(data.message || 'Update complete.'))
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred during update.');
+            });
+        }
+    </script>
+</body>
+</html>
