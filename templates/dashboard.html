@@ -213,7 +213,7 @@
         
         function populateColorOptions() {
             const select = document.getElementById('color_tag');
-            select.innerHTML = colors.map(color => `<option value="${color}">${color.charAt(0).toUpperCase() + color.slice(1)}</option>`).join('');
+            select.innerHTML = colorTags.map(color => `<option value="${color}">${color.charAt(0).toUpperCase() + color.slice(1)}</option>`).join('');
         }
 
         function logout() {
