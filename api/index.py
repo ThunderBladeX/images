@@ -127,11 +127,11 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         raise credentials_exception
     return username
 
-def upload_to_supabase(file_content: bytes, filename: str) -> str:
+def upload_to_supabase(file_content: bytes, filename: str, content_type: str) -> str:
     if not supabase:
         raise HTTPException(status_code=500, detail="Supabase client not initialized")
     try:
-        supabase.storage.from_(SUPABASE_BUCKET).upload(filename, file_content, {"content-type": file.content_type})
+        supabase.storage.from_(SUPABASE_BUCKET).upload(filename, file_content, {"content-type": content_type})
         return supabase.storage.from_(SUPABASE_BUCKET).get_public_url(filename)
     except Exception as e:
         if 'Duplicate' in str(e):
