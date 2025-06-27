@@ -179,8 +179,7 @@ async def login_page(request: Request):
 
 @api_router.post("/token")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    if not (secrets.compare_digest(form_data.username, AUTH_USERNAME) and
-            verify_password(form_data.password, get_password_hash(AUTH_PASSWORD))):
+    if not (secrets.compare_digest(form_data.username, AUTH_USERNAME) and verify_password(form_data.password, get_password_hash(AUTH_PASSWORD))):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
@@ -191,6 +190,8 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         data={"sub": form_data.username}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
+
+@api_router.get("/", response_class=HTMLResponse)
 
 @api_router.get("/api/images")
 async def get_images(db: Session = Depends(get_db), _=Depends(get_current_user)):
