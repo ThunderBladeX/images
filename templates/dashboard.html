@@ -8,13 +8,14 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; color: #1c1e21; margin: 0; padding: 2rem; }
         .container { max-width: 1200px; margin: auto; }
         h1, h2 { color: #333; }
+        .header { display: flex; justify-content: space-between; align-items: center; }
         .grid { display: grid; grid-template-columns: 300px 1fr; gap: 2rem; }
         .form-card, .image-card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
         input, select, textarea { width: 100%; padding: 0.75rem; border-radius: 6px; border: 1px solid #ddd; box-sizing: border-box; margin-bottom: 1rem; }
         textarea { min-height: 80px; }
-        button { background-color: #1877f2; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: background-color 0.2s; }
-        button:hover { background-color: #166fe5; }
+        button, .button { background-color: #1877f2; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: background-color 0.2s; text-decoration: none; display: inline-block; text-align: center; }
+        button:hover, .button:hover { background-color: #166fe5; }
         .image-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
         .image-item { border: 1px solid #ddd; border-radius: 6px; overflow: hidden; position: relative; }
         .image-item img { width: 100%; height: 150px; object-fit: cover; display: block; }
@@ -28,15 +29,20 @@
         #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #333; color: white; padding: 10px 20px; border-radius: 5px; opacity: 0; transition: opacity 0.5s; z-index: 1000; }
         .checkbox-label { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
         .checkbox-label input { width: auto; margin-bottom: 0; }
+        .logout-btn { background-color: #6c757d; }
+        .logout-btn:hover { background-color: #5a6268; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎨 Alathea's Art Manager</h1>
+        <div class="header">
+            <h1>🎨 Alathea's Art Manager</h1>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
         <div class="grid">
             <div class="form-card">
                 <h2>Upload New Artwork</h2>
-                <form action="/upload" method="post" enctype="multipart/form-data">
+                <form id="uploadForm">
                     <label for="file">Image File</label>
                     <input type="file" id="file" name="file" accept="image/*" required>
                     
@@ -48,16 +54,14 @@
                     
                     <label for="color_tag">Color Tag</label>
                     <select id="color_tag" name="color_tag" required>
-                        {% for color in color_options %}
-                        <option value="{{ color }}">{{ color.title() }}</option>
-                        {% endfor %}
+                        <!-- Options will be populated by JS -->
                     </select>
 
                     <label for="description">Description (optional)</label>
                     <textarea id="description" name="description"></textarea>
 
                     <label class="checkbox-label">
-                        <input type="checkbox" name="is_sensitive" value="true"> Is Sensitive Content (16+)?
+                        <input type="checkbox" id="is_sensitive" name="is_sensitive" value="true"> Is Sensitive Content (16+)?
                     </label>
 
                     <button type="submit">Upload & Update Gallery</button>
@@ -68,21 +72,9 @@
             </div>
             
             <div class="image-card">
-                <h2>Uploaded Images ({{ images|length }})</h2>
-                <div class="image-gallery">
-                    {% for image in images %}
-                    <div class="image-item">
-                        <img src="{{ image.supabase_url }}" alt="{{ image.title }}">
-                        <div class="image-info">
-                            <p class="image-title">{{ image.title }}</p>
-                            <p class="image-meta">{{ image.year_made }} | <span style="color:{{image.color_tag}};">●</span> {{ image.color_tag }}</p>
-                            <div class="actions">
-                                <button class="copy-btn" onclick="copyToClipboard('{{ image.markdown_url }}')">Copy MD</button>
-                                <button class="delete-btn" onclick="deleteImage({{ image.id }})">Delete</button>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
+                <h2>Uploaded Images (<span id="imageCount">0</span>)</h2>
+                <div class="image-gallery" id="imageGallery">
+                    <!-- Images will be populated by JS -->
                 </div>
             </div>
         </div>
@@ -91,51 +83,154 @@
 
     <script>
         const toast = document.getElementById('toast');
+        const token = localStorage.getItem('accessToken');
 
-        function showToast(message) {
+        function showToast(message, isError = false) {
             toast.textContent = message;
+            toast.style.backgroundColor = isError ? '#e44d3a' : '#333';
             toast.style.opacity = 1;
             setTimeout(() => { toast.style.opacity = 0; }, 3000);
+        }
+
+        function getAuthHeader() {
+            return { 'Authorization': `Bearer ${token}` };
+        }
+
+        async function fetchWithAuth(url, options = {}) {
+            const response = await fetch(url, {
+                ...options,
+                headers: {
+                    ...getAuthHeader(),
+                    ...options.headers,
+                },
+            });
+
+            if (response.status === 401) {
+                logout();
+                return;
+            }
+            return response;
         }
 
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
                 showToast('Markdown URL copied!');
             }, (err) => {
-                showToast('Failed to copy!');
-                console.error('Could not copy text: ', err);
+                showToast('Failed to copy!', true);
             });
         }
 
-        function deleteImage(imageId) {
-            if (!confirm('Are you sure you want to delete this image? This will also update Neocities.')) {
-                return;
-            }
-            fetch(`/delete/${imageId}`, {
-                method: 'DELETE',
-            })
-            .then(response => response.json())
-            .then(data => {
+        async function deleteImage(imageId) {
+            if (!confirm('Are you sure you want to delete this image? This will also update Neocities.')) return;
+            
+            try {
+                const response = await fetchWithAuth(`/api/delete/${imageId}`, { method: 'DELETE' });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.detail || data.message);
                 showToast(data.message || 'Image deleted.');
-                // Refresh the page to show the updated list
-                location.reload();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showToast('An error occurred.');
+                fetchImages();
+            } catch (error) {
+                showToast(`Error: ${error.message}`, true);
+            }
+        }
+        
+        async function manualUpdate() {
+            showToast('Triggering Neocities update...');
+            try {
+                const response = await fetchWithAuth('/api/update-gallery', { method: 'POST' });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.detail || data.message);
+                showToast(data.message || 'Update complete.');
+            } catch (error) {
+                showToast(`Error: ${error.message}`, true);
+            }
+        }
+        
+        async function handleUpload(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            submitButton.disabled = true;
+            submitButton.textContent = 'Uploading...';
+            showToast('Uploading...');
+
+            try {
+                const response = await fetchWithAuth('/api/upload', {
+                    method: 'POST',
+                    body: formData,
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.detail || data.message);
+                
+                showToast(data.message || 'Upload successful!');
+                form.reset();
+                fetchImages();
+            } catch (error) {
+                showToast(`Upload failed: ${error.message}`, true);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Upload & Update Gallery';
+            }
+        }
+
+        function renderImages(images) {
+            const gallery = document.getElementById('imageGallery');
+            const imageCount = document.getElementById('imageCount');
+            gallery.innerHTML = '';
+            imageCount.textContent = images.length;
+
+            images.forEach(image => {
+                const item = document.createElement('div');
+                item.className = 'image-item';
+                item.innerHTML = `
+                    <img src="${image.supabase_url}" alt="${image.title}">
+                    <div class="image-info">
+                        <p class="image-title">${image.title}</p>
+                        <p class="image-meta">${image.year_made} | <span style="color:${image.color_tag};">●</span> ${image.color_tag}</p>
+                        <div class="actions">
+                            <button class="copy-btn" onclick="copyToClipboard('${image.markdown_url}')">Copy MD</button>
+                            <button class="delete-btn" onclick="deleteImage(${image.id})">Delete</button>
+                        </div>
+                    </div>
+                `;
+                gallery.appendChild(item);
             });
         }
         
-        function manualUpdate() {
-            showToast('Triggering Neocities update...');
-            fetch('/update-gallery', { method: 'POST' })
-            .then(response => response.json())
-            .then(data => showToast(data.message || 'Update complete.'))
-            .catch(error => {
-                console.error('Error:', error);
-                showToast('An error occurred during update.');
-            });
+        async function fetchImages() {
+             try {
+                const response = await fetchWithAuth('/api/images');
+                if (!response.ok) throw new Error('Failed to fetch images.');
+                const images = await response.json();
+                renderImages(images);
+            } catch (error) {
+                showToast(error.message, true);
+            }
         }
+        
+        function populateColorOptions() {
+            const colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet", "black", "white"];
+            const select = document.getElementById('color_tag');
+            select.innerHTML = colors.map(color => `<option value="${color}">${color.charAt(0).toUpperCase() + color.slice(1)}</option>`).join('');
+        }
+
+        function logout() {
+            localStorage.removeItem('accessToken');
+            window.location.href = '/login';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            document.getElementById('uploadForm').addEventListener('submit', handleUpload);
+            populateColorOptions();
+            fetchImages();
+        });
     </script>
 </body>
 </html>
