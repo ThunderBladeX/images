@@ -21,7 +21,7 @@ from jose import JWTError, jwt
 from mangum import Mangum
 from passlib.context import CryptContext
 from sqlalchemy import (
-    create_engine, Column, Integer, String, DateTime, Text, Boolean, Enum as SAEnum
+    create_engine, Column, Integer, String, DateTime, Text, Boolean, Enum as SAEnum, case
 )
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.ext.declarative import declarative_base
@@ -147,7 +147,7 @@ def update_neocities_gallery(db: Session):
         logger.warning("Neocities credentials not set. Skipping update.")
         return "Neocities credentials not set. Skipped update."
 
-    logger.info("Starting Neocities gallery update process...")
+    logger.info("Starting Neocities gallery update with custom sorting...")
     try:
         logger.info("Fetching images for Neocities gallery update...")
         images = db.query(ImageRecord).order_by(ImageRecord.year_made.desc(), ImageRecord.color_tag).all()
