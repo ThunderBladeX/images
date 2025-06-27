@@ -222,7 +222,8 @@ async def upload_image(
         raise HTTPException(status_code=400, detail="File must be an image.")
     
     file_content = await file.read()
-    uuid_filename = f"{uuid.uuid4()}.webp"
+    original_ext = os.path.splitext(str(file.filename))[-1]
+    uuid_filename = f"{uuid.uuid4()}{original_ext}"
     
     supabase_url = upload_to_supabase(file_content, uuid_filename)
     markdown_url = f"![{title}]({supabase_url})"
