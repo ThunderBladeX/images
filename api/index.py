@@ -5,9 +5,10 @@ import secrets
 import enum
 from datetime import datetime, timedelta, timezone
 from typing import Optional
-
 import requests
 from decouple import config, Csv
+from alembic.config import Config
+from alembic import command
 from fastapi import (
     FastAPI, HTTPException, Depends, UploadFile, File, Form, Request, status,
     APIRouter
@@ -40,6 +41,7 @@ NEOCITIES_API_KEY = config("NEOCITIES_API_KEY", default=None)
 SECRET_KEY = config("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
+MIGRATION_SECRET = config("MIGRATION_SECRET", default=None)
 
 app = FastAPI(
     title="Alathea's Art Manager",
@@ -280,5 +282,37 @@ async def manual_gallery_update_endpoint(db: Session = Depends(get_db), _=Depend
         return {"message": message}
     except HTTPException as e:
         raise e
+
+@api_router.get("/manage/migrations", response_class=HTMLResponse, include_in_schema=False)
+async def migration_page():
+    return """
+    <!DOCTYPE html>
+    <html>
+    <head><title>DB Migration</title></head>
+    <body>
+        <h1>Database Migration</h1>
+        <form action="/run-migrations" method="post">
+            <label for="secret">Migration Secret:</label>
+            <input type="password" id="secret" name="secret" required>
+            <button type="submit">Run Migrations</button>
+        </form>
+    </body>
+    </html>
+    """
+
+@api_router.post("/run-migrations", include_in_schema=False)
+async def run_migrations_endpoint(secret: str = Form(...)):
+    if not MIGRATION_SECRET or secret != MIGRATION_SECRET:
+        raise HTTPException(status_code=403, detail="Invalid secret key")
+
+    try:
+        logger.info("Running migrations programmatically from endpoint...")
+        alembic_cfg = Config("alembic.ini")
+        command.upgrade(alembic_cfg, "head")
+        logger.info("Migrations completed successfully.")
+        return HTMLResponse("<h1>Migrations ran successfully!</h1>")
+    except Exception as e:
+        logger.error(f"Migration failed: {str(e)}")
+        return HTMLResponse(f"<h1>Migration Failed</h1><p>{str(e)}</p>", status_code=500)
 
 app.include_router(api_router)
