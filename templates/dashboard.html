@@ -84,6 +84,7 @@
     <script>
         const toast = document.getElementById('toast');
         const token = localStorage.getItem('accessToken');
+        const colorTags = {{ color_tags | tojson }};
 
         function showToast(message, isError = false) {
             toast.textContent = message;
@@ -211,7 +212,6 @@
         }
         
         function populateColorOptions() {
-            const colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet", "black", "white"];
             const select = document.getElementById('color_tag');
             select.innerHTML = colors.map(color => `<option value="${color}">${color.charAt(0).toUpperCase() + color.slice(1)}</option>`).join('');
         }
