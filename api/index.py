@@ -268,4 +268,3 @@ async def manual_gallery_update_endpoint(db: Session = Depends(get_db), _=Depend
         raise e
 
 app.include_router(api_router)
-handler = Mangum(app)
