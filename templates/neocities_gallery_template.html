@@ -110,7 +110,7 @@
         <div id="caption" class="modal-caption"></div>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', function() { /* ... sparkle code ... */ });
+        document.addEventListener('DOMContentLoaded', function() { setInterval(function() { const sparkle = document.createElement('div'); sparkle.innerHTML = '✨'; sparkle.style.position = 'fixed'; sparkle.style.left = Math.random() * 100 + 'vw'; sparkle.style.top = Math.random() * 100 + 'vh'; sparkle.style.fontSize = (Math.random() * 10 + 10) + 'px'; sparkle.style.opacity = '0'; sparkle.style.transition = 'all 1s ease'; sparkle.style.pointerEvents = 'none'; sparkle.style.zIndex = '999'; document.body.appendChild(sparkle); setTimeout(() => { sparkle.style.opacity = '0.8'; sparkle.style.transform = `translate(${Math.random()*20-10}px, ${Math.random()*20-10}px)rotate(${Math.random()*90-45}deg)`; }, 100); setTimeout(() => { sparkle.style.opacity = '0'; }, 1500); setTimeout(() => { if(document.body.contains(sparkle)) { document.body.removeChild(sparkle); } }, 2500); }, 3000); });
         var modal = document.getElementById("myModal");
         var modalImg = document.getElementById("modalImage");
         var captionText = document.getElementById("caption");
