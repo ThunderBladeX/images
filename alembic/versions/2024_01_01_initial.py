@@ -17,18 +17,18 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     op.create_table('images',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('uuid_filename', sa.String(), nullable=False),
-    sa.Column('original_filename', sa.String(), nullable=False),
-    sa.Column('title', sa.String(), nullable=False),
-    sa.Column('description', sa.Text(), nullable=True),
-    sa.Column('supabase_url', sa.String(), nullable=False),
-    sa.Column('markdown_url', sa.Text(), nullable=False),
-    sa.Column('color_tag', sa.Enum('red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'black', 'white', name='color_tag_enum'), nullable=False),
-    sa.Column('year_made', sa.Integer(), nullable=False),
-    sa.Column('is_sensitive', sa.Boolean(), nullable=True),
-    sa.Column('uploaded_at', sa.DateTime(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+        sa.Column('id', sa.Integer(), nullable=False),
+        sa.Column('uuid_filename', sa.String(), nullable=False),
+        sa.Column('original_filename', sa.String(), nullable=False),
+        sa.Column('title', sa.String(), nullable=False),
+        sa.Column('description', sa.Text(), nullable=True),
+        sa.Column('supabase_url', sa.String(), nullable=False),
+        sa.Column('markdown_url', sa.Text(), nullable=False),
+        sa.Column('color_tag', sa.Enum('red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'black', 'white', name='color_tag_enum'), nullable=False),
+        sa.Column('year_made', sa.Integer(), nullable=False),
+        sa.Column('is_sensitive', sa.Boolean(), nullable=True),
+        sa.Column('uploaded_at', sa.DateTime(), nullable=True),
+        sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_images_id'), 'images', ['id'], unique=False)
     op.create_index(op.f('ix_images_uuid_filename'), 'images', ['uuid_filename'], unique=True)
