@@ -17,8 +17,11 @@ import secrets
 import requests
 import uuid
 import enum
+from mangum import Mangum
 
-# Load environment variables for Render deployment
+app = FastAPI(title="Alathea's Art Manager", description="Personal Image Hosting and Neocities Gallery Updater")
+handler = Mangum(app)
+
 DATABASE_URL = os.getenv("DATABASE_URL")
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
@@ -28,11 +31,9 @@ AUTH_PASSWORD = os.getenv("AUTH_PASSWORD")
 NEOCITIES_USERNAME = os.getenv("NEOCITIES_USERNAME")
 NEOCITIES_API_KEY = os.getenv("NEOCITIES_API_KEY")
 
-# Basic validation for essential variables
 if not all([DATABASE_URL, SUPABASE_URL, SUPABASE_KEY, AUTH_USERNAME, AUTH_PASSWORD]):
     raise Exception("Missing essential environment variables (DB, Supabase, Auth)")
 
-app = FastAPI(title="Alathea's Art Manager", description="Personal Image Hosting and Neocities Gallery Updater")
 security = HTTPBasic()
 templates = Jinja2Templates(directory="templates")
 
