@@ -172,7 +172,7 @@ def update_neocities_gallery(db: Session):
         raise HTTPException(status_code=500, detail=f"Failed to update Neocities: {error_text}")
 
 @api_router.get("/", response_class=HTMLResponse)
-async def dashboard(request: Request, _=Depends(get_current_user)):
+async def dashboard(request: Request):
     return templates.TemplateResponse("dashboard.html", {
         "request": request,
         "color_tags": [e.value for e in ColorTag]
