@@ -307,12 +307,22 @@ async def run_migrations_endpoint(secret: str = Form(...)):
 
     try:
         logger.info("Running migrations programmatically from endpoint...")
-        alembic_cfg = Config("alembic.ini")
+
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        alembic_ini_path = os.path.join(project_root, "alembic.ini")
+        
+        logger.info(f"Using alembic config from: {alembic_ini_path}")
+
+        alembic_cfg = Config(alembic_ini_path)
+        
         command.upgrade(alembic_cfg, "head")
+        
         logger.info("Migrations completed successfully.")
         return HTMLResponse("<h1>Migrations ran successfully!</h1>")
     except Exception as e:
         logger.error(f"Migration failed: {str(e)}")
+        import traceback
+        logger.error(traceback.format_exc())
         return HTMLResponse(f"<h1>Migration Failed</h1><p>{str(e)}</p>", status_code=500)
 
 app.include_router(api_router)
