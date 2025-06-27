@@ -177,6 +177,17 @@ async def dashboard(request: Request, _=Depends(get_current_user)):
 async def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
+hashed_auth_password = None
+
+def initialize_password():
+    global hashed_auth_password
+    plain_password = config("AUTH_PASSWORD")
+    hashed_auth_password = get_password_hash(plain_password)
+
+@app.on_event("startup")
+async def startup_event():
+    initialize_password()
+
 @api_router.post("/token")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     if not (secrets.compare_digest(form_data.username, AUTH_USERNAME) and verify_password(form_data.password, get_password_hash(AUTH_PASSWORD))):
