@@ -90,11 +90,13 @@
                         <img src="{{ image.supabase_url }}" alt="{{ image.title | e }}" onclick="openModal('{{ image.supabase_url }}', this.alt, '{{ image.alt_text | e }}')">
                         {% endif %}
                         <h3 class="artwork-title">{{ image.title }}</h3>
-                        {% if image.description %}<p class="artwork-description">{{ image.description }}</p>{% endif %}
-                        <p class="artwork-date">Created: {{ image.year_made }}{%- if image.month_made -%}-{{ "%02d"|format(image.month_made) }}{%- if image.day_made -%}-{{ "%02d"|format(image.day_made) }}{%- endif -%}{%- endif -%}</p>
+                        {% if image.description %}
+                        <p class="artwork-description">{{ image.description }}</p>
+                        {% endif %}
                         {% if image.credit_text and image.credit_url %}
                         <p class="artwork-credit"><a href="{{ image.credit_url }}" target="_blank" rel="noopener noreferrer">© {{ image.credit_text }}</a></p>
                         {% endif %}
+                        <p class="artwork-date">Created: {{ image.year_made }}{%- if image.month_made -%}-{{ "%02d"|format(image.month_made) }}{%- if image.day_made -%}-{{ "%02d"|format(image.day_made) }}{%- endif -%}{%- endif -%}</p>
                     </div>
                     {% endfor %}
                     
