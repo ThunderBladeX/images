@@ -146,7 +146,6 @@ def update_neocities_gallery(db: Session):
     if not NEOCITIES_USERNAME or not NEOCITIES_API_KEY:
         logger.warning("Neocities credentials not set. Skipping update.")
         return "Neocities credentials not set. Skipped update."
-
     logger.info("Starting Neocities gallery update with custom sorting...")
     try:
         logger.info("Fetching images for Neocities gallery update with custom sorting...")
@@ -155,12 +154,10 @@ def update_neocities_gallery(db: Session):
             value=ImageRecord.color_tag
         )
         images = db.query(ImageRecord).order_by(ImageRecord.year_made.desc(), color_order_case).all()
-
         logger.info(f"Found {len(images)} images. Generating HTML...")
         env = Environment(loader=FileSystemLoader(os.path.join(os.path.dirname(__file__), '../templates')))
         template = env.get_template("neocities_gallery_template.html")
         gallery_html = template.render({"images": images})
-
         logger.info("Uploading to Neocities...")
         response = requests.post(
             "https://neocities.org/api/upload",
@@ -188,7 +185,6 @@ async def login_page(request: Request):
 @api_router.post("/token")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     hashed_password = get_password_hash(config("AUTH_PASSWORD"))
-
     if not (secrets.compare_digest(form_data.username, AUTH_USERNAME) and verify_password(form_data.password, hashed_password)):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -298,21 +294,15 @@ async def migration_page():
 async def run_migrations_endpoint(secret: str = Form(...)):
     if not MIGRATION_SECRET or secret != MIGRATION_SECRET:
         raise HTTPException(status_code=403, detail="Invalid secret key")
-
     try:
         logger.info("Running migrations programmatically from endpoint...")
-
-        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        project_root = os.path.dirname(os.path.abspath(__file__))
         alembic_ini_path = os.path.join(project_root, "alembic.ini")
-        
         logger.info(f"Using alembic config from: {alembic_ini_path}")
-
         alembic_cfg = Config(alembic_ini_path)
         alembic_script_location = os.path.join(project_root, "alembic")
         alembic_cfg.set_main_option("script_location", alembic_script_location)
-
         command.upgrade(alembic_cfg, "head")
-        
         logger.info("Migrations completed successfully.")
         return HTMLResponse("<h1>Migrations ran successfully!</h1>")
     except Exception as e:
