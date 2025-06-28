@@ -185,6 +185,8 @@ async def upload_image(
     month_made: Optional[int] = Form(None),
     day_made: Optional[int] = Form(None),
     description: Optional[str] = Form(None),
+    credit_text: Optional[str] = Form(None),
+    credit_url: Optional[str] = Form(None),
     is_sensitive: bool = Form(False)
 ):
     if not file.content_type or not file.content_type.startswith('image/'):
@@ -203,13 +205,15 @@ async def upload_image(
         original_filename=str(file.filename),
         title=title,
         alt_text=final_alt_text,
+        description=description,
+        credit_text=credit_text,
+        credit_url=credit_url,
         supabase_url=supabase_url,
         markdown_url=markdown_url,
         color_tag=color_tag,
         year_made=year_made,
         month_made=month_made,
         day_made=day_made,
-        description=description,
         is_sensitive=is_sensitive,
     )
     db.add(new_image)
