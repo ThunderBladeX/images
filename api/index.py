@@ -50,8 +50,8 @@ api_router = APIRouter()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-project_root = os.path.dirname(os.path.abspath(__file__))
-templates = Jinja2Templates(directory=os.path.join(project_root, 'templates'))
+deployment_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+templates = Jinja2Templates(directory=os.path.join(deployment_root, 'templates'))
 
 try:
     supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -266,13 +266,13 @@ async def run_migrations_endpoint(secret: str = Form(...)):
         raise HTTPException(status_code=403, detail="Invalid secret key")
     try:
         logger.info("Running migrations programmatically from endpoint...")
-        project_root = os.path.dirname(os.path.abspath(__file__))
-        alembic_ini_path = os.path.join(project_root, "alembic.ini")
+        deployment_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        alembic_ini_path = os.path.join(deployment_root, "alembic.ini")
+
         logger.info(f"Using alembic config from: {alembic_ini_path}")
         alembic_cfg = Config(alembic_ini_path)
-        alembic_script_location = os.path.join(project_root, "alembic")
-        alembic_cfg.set_main_option("script_location", alembic_script_location)
         command.upgrade(alembic_cfg, "head")
+
         logger.info("Migrations completed successfully.")
         return HTMLResponse("<h1>Migrations ran successfully!</h1>")
     except Exception as e:
