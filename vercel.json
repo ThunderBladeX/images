@@ -6,9 +6,9 @@
       "use": "@vercel/python",
       "config": {
         "includeFiles": [
-          "../templates/**",
-          "../alembic.ini",
-          "../alembic/**"
+          "templates/**",
+          "alembic.ini",
+          "alembic/**"
         ]
       }
     }
