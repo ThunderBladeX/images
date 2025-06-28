@@ -9,11 +9,12 @@ from decouple import config
 
 # Centralized DB and model configuration
 DATABASE_URL = config("DATABASE_URL")
+
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# Enum for color tags
+# Enum for color tags (belongs with the model)
 class ColorTag(str, enum.Enum):
     red = "red"
     orange = "orange"
