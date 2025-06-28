@@ -25,6 +25,7 @@ from .models import (
     Base, SessionLocal, ImageRecord, ColorTag
 )
 from supabase import create_client, Client
+from . import __init__
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -264,24 +265,15 @@ async def migration_page():
 async def run_migrations_endpoint(secret: str = Form(...)):
     if not MIGRATION_SECRET or secret != MIGRATION_SECRET:
         raise HTTPException(status_code=403, detail="Invalid secret key")
+    deployment_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    original_cwd = os.getcwd()
     try:
         logger.info("Running migrations programmatically from endpoint...")
-        deployment_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        logger.info(f"Original CWD: {original_cwd}")
+        os.chdir(deployment_root)
+        logger.info(f"Temporarily changed CWD to: {os.getcwd()}")
+        
         alembic_ini_path = os.path.join(deployment_root, "alembic.ini")
-        logger.info(f"Using alembic config from: {alembic_ini_path}")
-
-        if not os.path.exists(alembic_ini_path):
-            logger.error(f"Alembic config not found at {alembic_ini_path}")
-            try:
-                logger.error(f"Contents of deployment_root ({deployment_root}): {os.listdir(deployment_root)}")
-            except Exception as list_e:
-                logger.error(f"Could not list contents of deployment_root: {list_e}")
-            raise FileNotFoundError("alembic.ini not found in deployment package.")
-    
-        if not os.path.exists(os.path.join(deployment_root, "alembic")):
-            logger.error(f"Alembic script directory not found in {deployment_root}")
-            raise FileNotFoundError("alembic/ directory not found in deployment package.")
-
         alembic_cfg = Config(alembic_ini_path)
         command.upgrade(alembic_cfg, "head")
 
@@ -292,5 +284,8 @@ async def run_migrations_endpoint(secret: str = Form(...)):
         import traceback
         logger.error(traceback.format_exc())
         return HTMLResponse(f"<h1>Migration Failed</h1><p>{str(e)}</p>", status_code=500)
+    finally:
+        os.chdir(original_cwd)
+        logger.info(f"Restored CWD to: {original_cwd}")
 
 app.include_router(api_router)
