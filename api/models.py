@@ -35,6 +35,8 @@ class ImageRecord(Base):
     title = Column(String, nullable=False)
     alt_text = Column(Text, nullable=True)
     description = Column(Text, nullable=True)
+    credit_text = Column(String, nullable=True)
+    credit_url = Column(String, nullable=True)
     supabase_url = Column(String, nullable=False)
     markdown_url = Column(Text, nullable=False)
     color_tag = Column(SAEnum(ColorTag, name="color_tag_enum"), nullable=False)
