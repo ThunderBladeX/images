@@ -30,68 +30,6 @@ from supabase import create_client, Client
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-DATABASE_URL = config("DATABASE_URL")
-SUPABASE_URL = config("SUPABASE_URL")
-SUPABASE_KEY = config("SUPABASE_KEY")
-SUPABASE_BUCKET = config("SUPABASE_BUCKET")
-AUTH_USERNAME = config("AUTH_USERNAME")
-AUTH_PASSWORD = config("AUTH_PASSWORD")
-NEOCITIES_USERNAME = config("NEOCITIES_USERNAME")
-NEOCITIES_API_KEY = config("NEOCITIES_API_KEY")
-SECRET_KEY = config("SECRET_KEY")
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
-MIGRATION_SECRET = config("MIGRATION_SECRET", default=None)
-
-app = FastAPI(
-    title="Alathea's Art Manager",
-    description="Personal Image Hosting and Neocities Gallery Updater"
-)
-api_router = APIRouter()
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-project_root = os.path.dirname(os.path.abspath(__file__))
-templates = Jinja2Templates(directory=os.path.join(project_root, 'templates'))
-
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
-
-try:
-    supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-except Exception as e:
-    logger.error(f"Error initializing Supabase client: {e}")
-    supabase = None
-
-class ColorTag(str, enum.Enum):
-    red = "red"
-    orange = "orange"
-    yellow = "yellow"
-    green = "green"
-    blue = "blue"
-    indigo = "indigo"
-    violet = "violet"
-    black = "black"
-    white = "white"
-
-COLOR_ORDER = list(ColorTag)
-
-class ImageRecord(Base):
-    __tablename__ = "images"
-    id = Column(Integer, primary_key=True, index=True)
-    uuid_filename = Column(String, unique=True, index=True, nullable=False)
-    original_filename = Column(String, nullable=False)
-    title = Column(String, nullable=False)
-    description = Column(Text, nullable=True)
-    supabase_url = Column(String, nullable=False)
-    markdown_url = Column(Text, nullable=False)
-    color_tag = Column(SAEnum(ColorTag, name="color_tag_enum"), nullable=False)
-    year_made = Column(Integer, index=True, nullable=False)
-    is_sensitive = Column(Boolean, default=False)
-    uploaded_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-
 def get_db():
     db = SessionLocal()
     try:
