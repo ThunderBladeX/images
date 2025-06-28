@@ -82,11 +82,11 @@
                     <div class="artwork-item">
                         {% if image.is_sensitive %}
                         <div class="sensitive-content-wrapper" onclick="openModal('{{ image.supabase_url }}', '{{ image.alt_text | e }}', '{{ image.title | e }}')">
-                            <img src="{{ image.supabase_url }}" alt="{{ image.alt_text | e }}">
+                            <img src="{{ image.supabase_url }}" alt="{{ image.title | e }}">
                             <div class="sensitive-content-overlay">16+</div>
                         </div>
                         {% else %}
-                        <img src="{{ image.supabase_url }}" alt="{{ image.alt_text | e }}" onclick="openModal('{{ image.supabase_url }}', this.alt, '{{ image.title | e }}')">
+                        <img src="{{ image.supabase_url }}" alt="{{ image.title | e }}" onclick="openModal('{{ image.supabase_url }}', this.alt, '{{ image.alt_text | e }}')">
                         {% endif %}
                         <h3 class="artwork-title">{{ image.title }}</h3>
                         <p class="artwork-description">{{ image.description or '' }}</p>
