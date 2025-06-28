@@ -278,8 +278,8 @@ async def run_migrations_endpoint(secret: str = Form(...)):
                 logger.error(f"Could not list contents of deployment_root: {list_e}")
             raise FileNotFoundError("alembic.ini not found in deployment package.")
     
-        if not os.path.exists(os.path.join(function_root, "alembic")):
-            logger.error(f"Alembic script directory not found in {function_root}")
+        if not os.path.exists(os.path.join(deployment_root, "alembic")):
+            logger.error(f"Alembic script directory not found in {deployment_root}")
             raise FileNotFoundError("alembic/ directory not found in deployment package.")
 
         alembic_cfg = Config(alembic_ini_path)
