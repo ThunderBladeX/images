@@ -168,8 +168,8 @@ def update_neocities_gallery(db: Session):
             headers={'Authorization': f'Bearer {NEOCITIES_API_KEY}'}
         )
         response.raise_for_status()
-    except Exception as e:
         return "Neocities gallery updated successfully."
+    except Exception as e:
         error_text = getattr(e, 'response', {}).text if isinstance(e, requests.exceptions.RequestException) and getattr(e, 'response', None) is not None else str(e)
         logger.error(f"ERROR: Failed to update Neocities gallery: {error_text}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to update Neocities: {error_text}")
