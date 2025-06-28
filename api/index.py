@@ -30,6 +30,38 @@ from supabase import create_client, Client
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+SUPABASE_URL = config("SUPABASE_URL")
+SUPABASE_KEY = config("SUPABASE_KEY")
+SUPABASE_BUCKET = config("SUPABASE_BUCKET")
+AUTH_USERNAME = config("AUTH_USERNAME")
+AUTH_PASSWORD = config("AUTH_PASSWORD")
+NEOCITIES_USERNAME = config("NEOCITIES_USERNAME")
+NEOCITIES_API_KEY = config("NEOCITIES_API_KEY")
+SECRET_KEY = config("SECRET_KEY")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
+MIGRATION_SECRET = config("MIGRATION_SECRET", default=None)
+
+app = FastAPI(
+    title="Alathea's Art Manager",
+    description="Personal Image Hosting and Neocities Gallery Updater"
+)
+api_router = APIRouter()
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+project_root = os.path.dirname(os.path.abspath(__file__))
+templates = Jinja2Templates(directory=os.path.join(project_root, 'templates'))
+
+try:
+    supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+except Exception as e:
+    logger.error(f"Error initializing Supabase client: {e}")
+    supabase = None
+
+COLOR_ORDER = list(ColorTag)
+
 def get_db():
     db = SessionLocal()
     try:
