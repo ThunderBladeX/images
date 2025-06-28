@@ -266,12 +266,18 @@ async def run_migrations_endpoint(secret: str = Form(...)):
         raise HTTPException(status_code=403, detail="Invalid secret key")
     try:
         logger.info("Running migrations programmatically from endpoint...")
-        deployment_root = os.path.dirname(os.path.abspath(__file__))
+        deployment_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         alembic_ini_path = os.path.join(deployment_root, "alembic.ini")
         logger.info(f"Using alembic config from: {alembic_ini_path}")
+
         if not os.path.exists(alembic_ini_path):
             logger.error(f"Alembic config not found at {alembic_ini_path}")
+            try:
+                logger.error(f"Contents of deployment_root ({deployment_root}): {os.listdir(deployment_root)}")
+            except Exception as list_e:
+                logger.error(f"Could not list contents of deployment_root: {list_e}")
             raise FileNotFoundError("alembic.ini not found in deployment package.")
+    
         if not os.path.exists(os.path.join(function_root, "alembic")):
             logger.error(f"Alembic script directory not found in {function_root}")
             raise FileNotFoundError("alembic/ directory not found in deployment package.")
