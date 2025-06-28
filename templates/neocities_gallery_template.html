@@ -43,6 +43,7 @@
         .artwork-item img { max-width: 100%; height: auto; display: block; margin-bottom: 10px; border: 1px solid var(--campfire-smoke_translucent, rgba(93, 93, 93, 0.2)); aspect-ratio: 4 / 3; object-fit: cover; }
         .artwork-title { font-family: 'Americana BT', 'Courier New', cursive; font-size: 1.2em; color: var(--cherry-cola); margin: 10px 0 5px 0; }
         .artwork-description { font-size: 0.85em; color: var(--campfire-smoke); margin-bottom: 10px; flex-grow: 1; }
+        .artwork-credit { font-size: 0.85em; }
         .artwork-date { font-size: 0.75em; color: var(--sun-denim); font-style: italic; }
         .cherry-stain { display: inline-block; width: 15px; height: 15px; background: var(--cherry-cola); border-radius: 50%; opacity: 0.5; margin: 0 5px; }
         .modal { display: none; position: fixed; z-index: 1001; padding-top: 50px; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.85); }
@@ -89,8 +90,11 @@
                         <img src="{{ image.supabase_url }}" alt="{{ image.title | e }}" onclick="openModal('{{ image.supabase_url }}', this.alt, '{{ image.alt_text | e }}')">
                         {% endif %}
                         <h3 class="artwork-title">{{ image.title }}</h3>
-                        <p class="artwork-description">{{ image.description or '' }}</p>
+                        {% if image.description %}<p class="artwork-description">{{ image.description }}</p>{% endif %}
                         <p class="artwork-date">Created: {{ image.year_made }}{%- if image.month_made -%}-{{ "%02d"|format(image.month_made) }}{%- if image.day_made -%}-{{ "%02d"|format(image.day_made) }}{%- endif -%}{%- endif -%}</p>
+                        {% if image.credit_text and image.credit_url %}
+                        <p class="artwork-credit"><a href="{{ image.credit_url }}" target="_blank" rel="noopener noreferrer">© {{ image.credit_text }}</a></p>
+                        {% endif %}
                     </div>
                     {% endfor %}
                     
