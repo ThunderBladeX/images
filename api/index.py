@@ -271,6 +271,8 @@ async def run_migrations_endpoint(secret: str = Form(...)):
 
         logger.info(f"Using alembic config from: {alembic_ini_path}")
         alembic_cfg = Config(alembic_ini_path)
+        script_location = os.path.join(deployment_root, 'alembic')
+        alembic_cfg.set_main_option("script_location", os.path.join(deployment_root, "alembic"))
         command.upgrade(alembic_cfg, "head")
 
         logger.info("Migrations completed successfully.")
