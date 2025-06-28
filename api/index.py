@@ -179,8 +179,11 @@ async def upload_image(
     _=Depends(get_current_user),
     file: UploadFile = File(...),
     title: str = Form(...),
+    alt_text: Optional[str] = Form(None),
     color_tag: ColorTag = Form(...),
     year_made: int = Form(...),
+    month_made: Optional[int] = Form(None),
+    day_made: Optional[int] = Form(None),
     description: Optional[str] = Form(None),
     is_sensitive: bool = Form(False)
 ):
@@ -192,16 +195,20 @@ async def upload_image(
     uuid_filename = f"{uuid.uuid4()}{original_ext}"
     
     supabase_url = upload_to_supabase(file_content, uuid_filename, str(file.content_type))
-    markdown_url = f"![{title}]({supabase_url})"
+    final_alt_text = alt_text if alt_text and alt_text.strip() else title
+    markdown_url = f"![{final_alt_text}]({supabase_url})"
     
     new_image = ImageRecord(
         uuid_filename=uuid_filename,
         original_filename=str(file.filename),
         title=title,
+        alt_text=final_alt_text,
         supabase_url=supabase_url,
         markdown_url=markdown_url,
         color_tag=color_tag,
         year_made=year_made,
+        month_made=month_made,
+        day_made=day_made,
         description=description,
         is_sensitive=is_sensitive,
     )
