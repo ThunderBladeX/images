@@ -48,9 +48,18 @@
                     
                     <label for="title">Title</label>
                     <input type="text" id="title" name="title" required>
+
+                    <label for="alt_text">Alt Text (optional, for screen readers)</label>
+                    <input type="text" id="alt_text" name="alt_text" placeholder="Defaults to title if left blank">
                     
                     <label for="year_made">Year Made</label>
                     <input type="number" id="year_made" name="year_made" placeholder="e.g., 2023" required>
+                    
+                    <label for="month_made">Month Made (optional)</label>
+                    <input type="number" id="month_made" name="month_made" placeholder="1-12" min="1" max="12">
+                    
+                    <label for="day_made">Day Made (optional)</label>
+                    <input type="number" id="day_made" name="day_made" placeholder="1-31" min="1" max="31">
                     
                     <label for="color_tag">Color Tag</label>
                     <select id="color_tag" name="color_tag" required>
@@ -185,11 +194,17 @@
             images.forEach(image => {
                 const item = document.createElement('div');
                 item.className = 'image-item';
+                let dateString = image.year_made;
+                if (image.month_made) {
+                    dateString += `-${String(image.month_made).padStart(2, '0')}`;
+                    if (image.day_made) {dateString += `-${String(image.day_made).padStart(2, '0')}`;
+                                        }
+                }
                 item.innerHTML = `
                     <img src="${image.supabase_url}" alt="${image.title}">
                     <div class="image-info">
                         <p class="image-title">${image.title}</p>
-                        <p class="image-meta">${image.year_made} | <span style="color:${image.color_tag};">●</span> ${image.color_tag}</p>
+                        <p class="image-meta">${dateString} | <span style="color:${image.color_tag};">●</span> ${image.color_tag}</p>
                         <div class="actions">
                             <button class="copy-btn" onclick="copyToClipboard('${image.markdown_url}')">Copy MD</button>
                             <button class="delete-btn" onclick="deleteImage(${image.id})">Delete</button>
