@@ -157,7 +157,7 @@ def update_neocities_gallery(db: Session):
         images = db.query(ImageRecord).order_by(ImageRecord.year_made.desc(), color_order_case).all()
         logger.info(f"Found {len(images)} images. Generating HTML...")
 
-        template = env.get_template("neocities_gallery_template.html")
+        template = templates.get_template("neocities_gallery_template.html")
         gallery_html = template.render({"images": images})
         logger.info("Uploading to Neocities...")
         response = requests.post(
