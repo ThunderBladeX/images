@@ -10,8 +10,7 @@ from decouple import config, Csv
 from alembic.config import Config
 from alembic import command
 from fastapi import (
-    FastAPI, HTTPException, Depends, UploadFile, File, Form, Request, status,
-    APIRouter
+    FastAPI, HTTPException, Depends, UploadFile, File, Form, Request, status, APIRouter
 )
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -20,10 +19,11 @@ from jinja2 import Environment, FileSystemLoader
 from jose import JWTError, jwt
 from mangum import Mangum
 from passlib.context import CryptContext
-from sqlalchemy import (
-    create_engine, Column, Integer, String, DateTime, Text, Boolean, Enum as SAEnum, case
+from sqlalchemy import case
+from sqlalchemy.orm import Session
+from .models import (
+    Base, SessionLocal, ImageRecord, ColorTag
 )
-from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.ext.declarative import declarative_base
 from supabase import create_client, Client
 
