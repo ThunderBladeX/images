@@ -16,13 +16,22 @@ Base = declarative_base()
 
 # Enum for color tags (belongs with the model)
 class ColorTag(str, enum.Enum):
+    blushred = "blushred"
     red = "red"
     orange = "orange"
+    softorange = "softorange"
+    lightyellow = "lightyellow"
     yellow = "yellow"
     green = "green"
+    sagegreen = "sagegreen"
+    skyblue = "skyblue"
     blue = "blue"
     indigo = "indigo"
     violet = "violet"
+    magenta = "magenta"
+    pink = "pink"
+    honeybrown = "honeybrown"
+    brown = "brown"
     black = "black"
     white = "white"
 
