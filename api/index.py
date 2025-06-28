@@ -24,7 +24,6 @@ from sqlalchemy.orm import Session
 from .models import (
     Base, SessionLocal, ImageRecord, ColorTag
 )
-from sqlalchemy.ext.declarative import declarative_base
 from supabase import create_client, Client
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
