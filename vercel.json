@@ -8,7 +8,7 @@
         "includeFiles": [
           "templates/**",
           "alembic.ini",
-          "alembic/**"
+          "migrations/**"
         ]
       }
     }
