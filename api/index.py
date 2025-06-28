@@ -149,12 +149,18 @@ def update_neocities_gallery(db: Session):
 
     logger.info("Starting Neocities gallery update with custom sorting...")
     try:
-        logger.info("Fetching images for Neocities gallery update...")
-        images = db.query(ImageRecord).order_by(ImageRecord.year_made.desc(), ImageRecord.color_tag).all()
+        logger.info("Fetching images for Neocities gallery update with custom sorting...")
+        color_order_case = case(
+            {color.value: i for i, color in enumerate(COLOR_ORDER)},
+            value=ImageRecord.color_tag
+        )
+        images = db.query(ImageRecord).order_by(ImageRecord.year_made.desc(), color_order_case).all()
+
         logger.info(f"Found {len(images)} images. Generating HTML...")
         env = Environment(loader=FileSystemLoader(os.path.join(os.path.dirname(__file__), '../templates')))
         template = env.get_template("neocities_gallery_template.html")
         gallery_html = template.render({"images": images})
+
         logger.info("Uploading to Neocities...")
         response = requests.post(
             "https://neocities.org/api/upload",
