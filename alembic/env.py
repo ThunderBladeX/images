@@ -11,7 +11,7 @@ if config.config_file_name is not None:
 
 sys.path.insert(0, os.path.realpath(os.path.join(os.path.dirname(__file__), '..')))
 
-from api.index import Base, DATABASE_URL
+from index import Base, DATABASE_URL
 
 config.set_main_option('sqlalchemy.url', DATABASE_URL)
 
