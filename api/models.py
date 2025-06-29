@@ -18,6 +18,8 @@ Base = declarative_base()
 class ColorTag(str, enum.Enum):
     blushred = "blushred"
     red = "red"
+    brown = "brown"
+    honeybrown = "honeybrown"
     orange = "orange"
     softorange = "softorange"
     lightyellow = "lightyellow"
@@ -30,10 +32,10 @@ class ColorTag(str, enum.Enum):
     violet = "violet"
     magenta = "magenta"
     pink = "pink"
-    honeybrown = "honeybrown"
-    brown = "brown"
-    black = "black"
     white = "white"
+    gray = "gray"
+    darkgray = "darkgray"
+    black = "black"
 
 # SQLAlchemy model for the 'images' table
 class ImageRecord(Base):
