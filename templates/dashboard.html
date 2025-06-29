@@ -212,7 +212,7 @@
                         <p class="image-title">${image.title}</p>
                         <p class="image-meta">${dateString} | <span style="color:${image.color_tag};">●</span> ${image.color_tag}</p>
                         <div class="actions">
-                            <button class="copy-btn" onclick="copyToClipboard('${image.markdown_url}')">Copy MD</button>
+                            <button class="copy-btn" data-md-url="${image.markdown_url.replace(/"/g, '"')}" onclick="copyToClipboard(this.dataset.mdUrl)">Copy MD</button>
                             <button class="delete-btn" onclick="deleteImage(${image.id})">Delete</button>
                         </div>
                     </div>
