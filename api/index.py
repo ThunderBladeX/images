@@ -262,7 +262,7 @@ async def update_image(
     credit_text: Optional[str] = Form(None),
     credit_url: Optional[str] = Form(None),
     is_sensitive: bool = Form(False)
-+):
+):
     image = db.query(ImageRecord).filter(ImageRecord.id == image_id).first()
     if not image:
         raise HTTPException(status_code=404, detail="Image not found")
