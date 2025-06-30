@@ -233,18 +233,18 @@
             showToast(op_gerund);
 
             try {
-                const response = await fetchWithAuth('/api/upload', {
+                const response = await fetchWithAuth(url, {
                     method: method,
                     body: formData,
                 });
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.detail || data.message);
                 
-                showToast(data.message || 'Upload successful!');
+                showToast(data.message || `${op_verb} successful!`);
                 cancelEdit();
                 fetchImages();
             } catch (error) {
-                showToast(`Upload failed: ${error.message}`, true);
+                showToast(`${op_verb} failed: ${error.message}`, true);
             }
         }
 
