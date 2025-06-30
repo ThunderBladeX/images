@@ -298,6 +298,11 @@ async def manual_gallery_update_endpoint(db: Session = Depends(get_db), _=Depend
     except HTTPException as e:
         raise e
 
+@api_router.get("/health", status_code=status.HTTP_200_OK, include_in_schema=False)
+async def health_check():
+    """Simple health check endpoint to confirm the API is running."""
+    return {"status": "ok"}
+
 @api_router.get("/manage/migrations", response_class=HTMLResponse, include_in_schema=False)
 async def migration_page():
     return """
