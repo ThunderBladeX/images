@@ -263,7 +263,7 @@
                     if (image.day_made) {dateString += `-${String(image.day_made).padStart(2, '0')}`;
                                         }
                 }
-                const safeImageJson = JSON.stringify(image).replace(/'/g, "'");
+                const safeImageJson = JSON.stringify(image).replace(/'/g, "&apos;");
                 const safeMarkdownUrl = image.markdown_url.replace(/'/g, "\\'");
                 
                 item.innerHTML = `
