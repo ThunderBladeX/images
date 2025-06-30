@@ -26,6 +26,8 @@
         .copy-btn, .delete-btn { font-size: 0.8rem; padding: 0.3rem 0.6rem; border-radius: 4px; flex-grow: 1; }
         .delete-btn { background-color: #e44d3a; }
         .delete-btn:hover { background-color: #c83b2a; }
+        .edit-btn { background-color: #f0ad4e; color: white; border: none; font-size: 0.8rem; padding: 0.3rem 0.6rem; border-radius: 4px; flex-grow: 1; cursor: pointer; }
+        .edit-btn:hover { background-color: #ec971f; }
         #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #333; color: white; padding: 10px 20px; border-radius: 5px; opacity: 0; transition: opacity 0.5s; z-index: 1000; }
         .checkbox-label { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
         .checkbox-label input { width: auto; margin-bottom: 0; }
@@ -78,8 +80,8 @@
                     <label class="checkbox-label">
                         <input type="checkbox" id="is_sensitive" name="is_sensitive" value="true"> Is Sensitive Content (16+)?
                     </label>
-
                     <button type="submit">Upload & Update Gallery</button>
+                    <button type="button" id="cancelEditBtn" style="display: none; background-color: #6c757d; margin-top: 0.5rem;" class="button">Cancel Edit</button>
                 </form>
                 <hr style="margin: 2rem 0; border: 1px solid #eee;">
                 <h2>Manual Sync</h2>
@@ -99,6 +101,7 @@
     <script>
         const toast = document.getElementById('toast');
         const token = localStorage.getItem('accessToken');
+        let editingImageId = null;
         const colorTags = {{ color_tags | tojson }};
 
         function showToast(message, isError = false) {
@@ -149,6 +152,48 @@
                 showToast(`Error: ${error.message}`, true);
             }
         }
+
+        function startEdit(image) {
+            editingImageId = image.id;
+            
+            document.getElementById('title').value = image.title || '';
+            document.getElementById('alt_text').value = image.alt_text || '';
+            document.getElementById('year_made').value = image.year_made || '';
+            document.getElementById('month_made').value = image.month_made || '';
+            document.getElementById('day_made').value = image.day_made || '';
+            document.getElementById('color_tag').value = image.color_tag || '';
+            document.getElementById('description').value = image.description || '';
+            document.getElementById('credit_text').value = image.credit_text || '';
+            document.getElementById('credit_url').value = image.credit_url || '';
+            document.getElementById('is_sensitive').checked = image.is_sensitive;
+            
+            document.querySelector('.form-card h2').textContent = 'Edit Artwork Details';
+            document.querySelector('#uploadForm button[type="submit"]').textContent = 'Save Changes';
+
+            const fileInput = document.getElementById('file');
+            fileInput.disabled = true;
+            fileInput.required = false;
+
+            document.getElementById('cancelEditBtn').style.display = 'block';
+            document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function cancelEdit() {
+            editingImageId = null;
+            const form = document.getElementById('uploadForm');
+            form.reset();
+
+            document.querySelector('.form-card h2').textContent = 'Upload New Artwork';
+            const submitButton = form.querySelector('button[type="submit"]');
+            submitButton.textContent = 'Upload & Update Gallery';
+            submitButton.disabled = false;
+
+            const fileInput = document.getElementById('file');
+            fileInput.disabled = false;
+            fileInput.required = true;
+
+            document.getElementById('cancelEditBtn').style.display = 'none';
+        }
         
         async function manualUpdate() {
             showToast('Triggering Neocities update...');
@@ -167,27 +212,39 @@
             const form = event.target;
             const formData = new FormData(form);
             const submitButton = form.querySelector('button[type="submit"]');
+
+            let url, method, op_verb, op_gerund;
+
+            if (editingImageId) {
+                url = `/api/images/${editingImageId}`;
+                method = 'PUT';
+                formData.delete('file');
+                op_verb = 'Saving';
+                op_gerund = 'Saving changes...';
+            } else {
+                url = '/api/upload';
+                method = 'POST';
+                op_verb = 'Uploading';
+                op_gerund = 'Uploading...';
+            }
             
             submitButton.disabled = true;
-            submitButton.textContent = 'Uploading...';
-            showToast('Uploading...');
+            submitButton.textContent = `${op_verb}...`;
+            showToast(op_gerund);
 
             try {
                 const response = await fetchWithAuth('/api/upload', {
-                    method: 'POST',
+                    method: method,
                     body: formData,
                 });
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.detail || data.message);
                 
                 showToast(data.message || 'Upload successful!');
-                form.reset();
+                cancelEdit();
                 fetchImages();
             } catch (error) {
                 showToast(`Upload failed: ${error.message}`, true);
-            } finally {
-                submitButton.disabled = false;
-                submitButton.textContent = 'Upload & Update Gallery';
             }
         }
 
@@ -206,13 +263,16 @@
                     if (image.day_made) {dateString += `-${String(image.day_made).padStart(2, '0')}`;
                                         }
                 }
+                const imageJson = JSON.stringify(image).replace(/"/g, '"');
+                
                 item.innerHTML = `
                     <img src="${image.supabase_url}" alt="${image.title}">
                     <div class="image-info">
                         <p class="image-title">${image.title}</p>
                         <p class="image-meta">${dateString} | <span style="color:${image.color_tag};">●</span> ${image.color_tag}</p>
                         <div class="actions">
-                            <button class="copy-btn" data-md-url="${image.markdown_url.replace(/"/g, '"')}" onclick="copyToClipboard(this.dataset.mdUrl)">Copy MD</button>
+                            <button class="copy-btn button" data-md-url="${image.markdown_url.replace(/"/g, '"')}" onclick="copyToClipboard(this.dataset.mdUrl)">Copy MD</button>
+                            <button class="edit-btn" onclick="startEdit(${imageJson})">Edit</button>
                             <button class="delete-btn" onclick="deleteImage(${image.id})">Delete</button>
                         </div>
                     </div>
@@ -249,6 +309,7 @@
             }
             
             document.getElementById('uploadForm').addEventListener('submit', handleUpload);
+            document.getElementById('cancelEditBtn').addEventListener('click', cancelEdit);
             populateColorOptions();
             fetchImages();
         });
