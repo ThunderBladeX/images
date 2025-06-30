@@ -247,6 +247,49 @@ async def delete_image(image_id: int, db: Session = Depends(get_db), _=Depends(g
     except HTTPException as e:
         return JSONResponse(status_code=500, content={"message": "Image deleted, but Neocities update failed.", "error": e.detail})
 
+@api_router.put("/api/images/{image_id}", status_code=status.HTTP_200_OK)
+async def update_image(
+    image_id: int,
+    db: Session = Depends(get_db),
+    _=Depends(get_current_user),
+    title: str = Form(...),
+    alt_text: Optional[str] = Form(None),
+    color_tag: ColorTag = Form(...),
+    year_made: int = Form(...),
+    month_made: Optional[int] = Form(None),
+    day_made: Optional[int] = Form(None),
+    description: Optional[str] = Form(None),
+    credit_text: Optional[str] = Form(None),
+    credit_url: Optional[str] = Form(None),
+    is_sensitive: bool = Form(False)
++):
+    image = db.query(ImageRecord).filter(ImageRecord.id == image_id).first()
+    if not image:
+        raise HTTPException(status_code=404, detail="Image not found")
+
+    final_alt_text = alt_text if alt_text and alt_text.strip() else title
+
+    image.title = title
+    image.alt_text = final_alt_text
+    image.description = description
+    image.credit_text = credit_text
+    image.credit_url = credit_url
+    image.color_tag = color_tag
+    image.year_made = year_made
+    image.month_made = month_made
+    image.day_made = day_made
+    image.is_sensitive = is_sensitive
+    image.markdown_url = f"![{final_alt_text}]({image.supabase_url})"
+
+    db.commit()
+
+    try:
+        update_neocities_gallery(db)
+        return {"message": "Image details updated and gallery refreshed."}
+    except HTTPException as e:
+        logger.error(f"Neocities update failed after edit: {e.detail}")
+        return JSONResponse(status_code=500, content={"message": "Image updated, but Neocities update failed.", "error": e.detail})
+
 @api_router.post("/api/update-gallery")
 async def manual_gallery_update_endpoint(db: Session = Depends(get_db), _=Depends(get_current_user)):
     try:
