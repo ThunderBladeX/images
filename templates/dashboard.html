@@ -263,8 +263,8 @@
                     if (image.day_made) {dateString += `-${String(image.day_made).padStart(2, '0')}`;
                                         }
                 }
-                const safeImageJson = JSON.stringify(image).replace(/"/g, '"');
-                const safeMarkdownUrl = image.markdown_url.replace(/"/g, '"');
+                const safeImageJson = JSON.stringify(image).replace(/'/g, "'");
+                const safeMarkdownUrl = image.markdown_url.replace(/'/g, "\\'");
                 
                 item.innerHTML = `
                     <img src="${image.supabase_url}" alt="${image.title}">
