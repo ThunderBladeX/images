@@ -48,20 +48,6 @@
             opacity: 0.8;
         }
 
-        body::after {
-            content: '🌕';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            font-size: 2rem;
-            color: rgba(255, 255, 255, 0.3);
-            pointer-events: none;
-            animation: float-cosmic 12s ease-in-out infinite;
-            z-index: 0;
-        }
-
         @keyframes twinkle {
             0%, 100% { opacity: 0.8; }
             50% { opacity: 1; }
@@ -187,16 +173,6 @@
             letter-spacing: 0.05em;
             margin-top: 1rem;
             font-family: inherit;
-        }
-
-        button::before {
-            content: '🚀';
-            position: absolute;
-            top: 50%;
-            left: -30px;
-            transform: translateY(-50%);
-            font-size: 1.5rem;
-            transition: left 0.5s ease;
         }
 
         button::after {
