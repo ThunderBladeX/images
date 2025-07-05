@@ -3,93 +3,625 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Art Manager Dashboard</title>
+    <title>Dashboard</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 x=%22-.07em%22 font-size=%2290%22>🖌️</text></svg>">
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; color: #1c1e21; margin: 0; padding: 2rem; }
-        .container { max-width: 1200px; margin: auto; }
-        h1, h2 { color: #333; }
-        .header { display: flex; justify-content: space-between; align-items: center; }
-        .grid { display: grid; grid-template-columns: 300px 1fr; gap: 2rem; }
-        .form-card, .image-card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
-        input, select, textarea { width: 100%; padding: 0.75rem; border-radius: 6px; border: 1px solid #ddd; box-sizing: border-box; margin-bottom: 1rem; }
-        textarea { min-height: 80px; }
-        button, .button { background-color: #1877f2; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 6px; font-size: 1rem; cursor: pointer; transition: background-color 0.2s; text-decoration: none; display: inline-block; text-align: center; }
-        button:hover, .button:hover { background-color: #166fe5; }
-        .image-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
-        .image-item { border: 1px solid #ddd; border-radius: 6px; overflow: hidden; position: relative; }
-        .image-item img { width: 100%; height: 150px; object-fit: cover; display: block; }
-        .image-info { padding: 0.75rem; }
-        .image-title { font-weight: bold; margin: 0 0 0.5rem; }
-        .image-meta { font-size: 0.8rem; color: #666; }
-        .actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
-        .copy-btn, .delete-btn { font-size: 0.8rem; padding: 0.3rem 0.6rem; border-radius: 4px; flex-grow: 1; }
-        .delete-btn { background-color: #e44d3a; }
-        .delete-btn:hover { background-color: #c83b2a; }
-        .edit-btn { background-color: #f0ad4e; color: white; border: none; font-size: 0.8rem; padding: 0.3rem 0.6rem; border-radius: 4px; flex-grow: 1; cursor: pointer; }
-        .edit-btn:hover { background-color: #ec971f; }
-        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #333; color: white; padding: 10px 20px; border-radius: 5px; opacity: 0; transition: opacity 0.5s; z-index: 1000; }
-        .checkbox-label { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
-        .checkbox-label input { width: auto; margin-bottom: 0; }
-        .logout-btn { background-color: #6c757d; }
-        .logout-btn:hover { background-color: #5a6268; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background: radial-gradient(ellipse at top, #0f0f23 0%, #1a0033 25%, #2d1b69 75%, #000000 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(2px 2px at 20px 30px, #ffc0cb, transparent),
+                radial-gradient(2px 2px at 40px 70px, #87ceeb, transparent),
+                radial-gradient(1px 1px at 90px 40px, #ffd700, transparent),
+                radial-gradient(1px 1px at 130px 80px, #ff69b4, transparent),
+                radial-gradient(2px 2px at 160px 30px, #9370db, transparent),
+                radial-gradient(1px 1px at 200px 90px, #00ffff, transparent),
+                radial-gradient(1px 1px at 250px 20px, #ff1493, transparent),
+                radial-gradient(2px 2px at 300px 60px, #98fb98, transparent);
+            background-repeat: repeat;
+            background-size: 350px 250px;
+            animation: twinkle 8s ease-in-out infinite alternate, drift 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="0.5" fill="rgba(255,192,203,0.3)"/><circle cx="80" cy="40" r="0.3" fill="rgba(135,206,235,0.4)"/><circle cx="40" cy="80" r="0.4" fill="rgba(255,105,180,0.2)"/><circle cx="60" cy="10" r="0.2" fill="rgba(255,215,0,0.3)"/></svg>') repeat;
+            background-size: 200px 200px;
+            animation: float 15s ease-in-out infinite, rotate 30s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes drift {
+            0%, 100% { transform: translateY(0px) translateX(0px); }
+            25% { transform: translateY(-10px) translateX(5px); }
+            75% { transform: translateY(10px) translateX(-5px); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-15px) rotate(120deg); }
+            66% { transform: translateY(15px) rotate(240deg); }
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .container { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            margin-bottom: 2rem;
+            background: rgba(15, 15, 35, 0.8);
+            border-radius: 25px;
+            padding: 1.5rem 2rem;
+            border: 2px solid rgba(255, 192, 203, 0.3);
+            box-shadow: 
+                0 8px 32px rgba(255, 105, 180, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        h1 { 
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffc0cb 0%, #ff69b4 25%, #9370db 50%, #87ceeb 75%, #ffd700 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+            position: relative;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        h2 { 
+            color: #ffc0cb;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            position: relative;
+            text-shadow: 0 0 10px rgba(255, 192, 203, 0.5);
+        }
+
+        h2::before {
+            content: '🌙';
+            margin-right: 0.5rem;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(135deg, #ff69b4, #9370db, #87ceeb);
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+        }
+
+        .grid { 
+            display: grid; 
+            grid-template-columns: 380px 1fr; 
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .form-card, .image-card { 
+            background: rgba(15, 15, 35, 0.9);
+            padding: 2rem; 
+            border-radius: 25px; 
+            border: 2px solid rgba(255, 192, 203, 0.2);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.5),
+                0 0 20px rgba(255, 105, 180, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .form-card:hover, .image-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 15px 40px rgba(0, 0, 0, 0.6),
+                0 0 30px rgba(255, 105, 180, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 192, 203, 0.4);
+        }
+
+        .form-card::before, .image-card::before {
+            content: '⭐';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            font-size: 1.2rem;
+            animation: sparkle 3s ease-in-out infinite;
+        }
+
+        .form-card::after, .image-card::after {
+            content: '🌟';
+            position: absolute;
+            bottom: -5px;
+            left: -5px;
+            font-size: 1rem;
+            animation: sparkle 3s ease-in-out infinite reverse;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.7; }
+            50% { transform: scale(1.3) rotate(180deg); opacity: 1; }
+        }
+
+        label { 
+            display: block; 
+            font-weight: 600; 
+            margin-bottom: 0.5rem;
+            color: #ffc0cb;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 5px rgba(255, 192, 203, 0.3);
+        }
+
+        input, select, textarea { 
+            width: 100%; 
+            padding: 1rem; 
+            border-radius: 15px; 
+            border: 2px solid rgba(255, 192, 203, 0.3);
+            background: rgba(15, 15, 35, 0.8);
+            color: #e2e8f0;
+            box-sizing: border-box; 
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #ff69b4;
+            background: rgba(15, 15, 35, 0.9);
+            box-shadow: 
+                0 0 0 3px rgba(255, 105, 180, 0.2),
+                inset 0 2px 5px rgba(0, 0, 0, 0.3),
+                0 0 15px rgba(255, 105, 180, 0.3);
+            transform: translateY(-2px);
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: rgba(226, 232, 240, 0.5);
+        }
+
+        textarea { 
+            min-height: 100px; 
+            resize: vertical;
+        }
+
+        button, .button { 
+            background: linear-gradient(135deg, #ff69b4 0%, #9370db 50%, #4b0082 100%);
+            color: white; 
+            border: none; 
+            padding: 1rem 2rem; 
+            border-radius: 20px; 
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer; 
+            transition: all 0.3s ease;
+            text-decoration: none; 
+            display: inline-block; 
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 4px 15px rgba(255, 105, 180, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        button::before, .button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        button:hover::before, .button:hover::before {
+            left: 100%;
+        }
+
+        button:hover, .button:hover { 
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 
+                0 10px 25px rgba(255, 105, 180, 0.4),
+                0 0 20px rgba(255, 105, 180, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        button:active, .button:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        .image-gallery { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+            gap: 1.5rem;
+        }
+
+        .image-item { 
+            border: 2px solid rgba(255, 192, 203, 0.2);
+            border-radius: 20px; 
+            overflow: hidden; 
+            position: relative;
+            background: rgba(15, 15, 35, 0.9);
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 4px 15px rgba(0, 0, 0, 0.3),
+                0 0 10px rgba(255, 105, 180, 0.1);
+        }
+
+        .image-item:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 
+                0 15px 40px rgba(0, 0, 0, 0.4),
+                0 0 25px rgba(255, 105, 180, 0.3);
+            border-color: rgba(255, 192, 203, 0.5);
+        }
+
+        .image-item:hover::before {
+            opacity: 1;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        .image-item img { 
+            width: 100%; 
+            height: 200px; 
+            object-fit: cover; 
+            display: block;
+            transition: transform 0.3s ease;
+            filter: brightness(0.9) contrast(1.1);
+        }
+
+        .image-item:hover img {
+            transform: scale(1.05);
+            filter: brightness(1) contrast(1.2);
+        }
+
+        .image-info { 
+            padding: 1.5rem;
+        }
+
+        .image-title { 
+            font-weight: 700; 
+            margin: 0 0 0.8rem; 
+            color: #ffc0cb;
+            font-size: 1.1rem;
+            text-shadow: 0 0 5px rgba(255, 192, 203, 0.3);
+        }
+
+        .image-meta { 
+            font-size: 0.9rem; 
+            color: #a0aec0;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .image-meta::before {
+            content: '🕐';
+            font-size: 0.8rem;
+        }
+
+        .actions { 
+            display: flex; 
+            gap: 0.5rem;
+        }
+
+        .copy-btn, .delete-btn, .edit-btn { 
+            font-size: 0.85rem; 
+            padding: 0.6rem 1rem; 
+            border-radius: 12px; 
+            flex-grow: 1;
+            font-weight: 500;
+        }
+
+        .copy-btn {
+            background: linear-gradient(135deg, #20b2aa, #008b8b);
+            box-shadow: 0 3px 10px rgba(32, 178, 170, 0.3);
+        }
+
+        .copy-btn:hover {
+            box-shadow: 0 5px 15px rgba(32, 178, 170, 0.4);
+        }
+
+        .copy-btn::after {
+            content: ' 📋';
+        }
+
+        .delete-btn { 
+            background: linear-gradient(135deg, #dc143c, #8b0000);
+            box-shadow: 0 3px 10px rgba(220, 20, 60, 0.3);
+        }
+
+        .delete-btn:hover { 
+            box-shadow: 0 5px 15px rgba(220, 20, 60, 0.4);
+        }
+
+        .delete-btn::after {
+            content: ' 🗑️';
+        }
+
+        .edit-btn { 
+            background: linear-gradient(135deg, #ffa500, #ff8c00);
+            box-shadow: 0 3px 10px rgba(255, 165, 0, 0.3);
+        }
+
+        .edit-btn:hover { 
+            box-shadow: 0 5px 15px rgba(255, 165, 0, 0.4);
+        }
+
+        .edit-btn::after {
+            content: ' ✏️';
+        }
+
+        #toast { 
+            position: fixed; 
+            bottom: 30px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            background: rgba(15, 15, 35, 0.95);
+            color: #ffc0cb; 
+            padding: 1rem 2rem; 
+            border-radius: 20px; 
+            opacity: 0; 
+            transition: all 0.5s ease;
+            z-index: 1000;
+            border: 2px solid rgba(255, 192, 203, 0.3);
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.5),
+                0 0 20px rgba(255, 105, 180, 0.2);
+        }
+
+        .checkbox-label { 
+            display: flex; 
+            align-items: center; 
+            gap: 0.8rem; 
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+        }
+
+        .checkbox-label input { 
+            width: auto; 
+            margin-bottom: 0;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #ff69b4;
+            border-radius: 8px;
+            background: rgba(15, 15, 35, 0.8);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-label input:checked {
+            background: linear-gradient(135deg, #ff69b4, #9370db);
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.5);
+        }
+
+        .checkbox-label input:checked::after {
+            content: '💖';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12px;
+        }
+
+        .checkbox-label input:hover {
+            border-color: #ffc0cb;
+            box-shadow: 0 0 10px rgba(255, 192, 203, 0.3);
+        }
+
+        .logout-btn { 
+            background: linear-gradient(135deg, #4b0082, #2f1b69);
+            box-shadow: 0 4px 15px rgba(75, 0, 130, 0.3);
+        }
+
+        .logout-btn:hover { 
+            box-shadow: 0 6px 20px rgba(75, 0, 130, 0.4);
+        }
+
+        .logout-btn::after {
+            content: ' 🚪';
+        }
+
+        hr {
+            margin: 2rem 0;
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255, 192, 203, 0.3), rgba(255, 105, 180, 0.5), rgba(255, 192, 203, 0.3), transparent);
+            border-radius: 1px;
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+            .container { padding: 1rem; }
+            .header { flex-direction: column; gap: 1rem; text-align: center; }
+            h1 { font-size: 2rem; }
+            .image-gallery { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            position: relative;
+        }
+
+        button:disabled::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 192, 203, 0.3);
+            border-top: 2px solid #ffc0cb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .cosmic-accent {
+            position: relative;
+        }
+
+        @keyframes shootingStar {
+            0% { transform: translateX(-100px) translateY(-100px); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(100vw) translateY(100vh); opacity: 0; }
+        }
+
+        .shooting-star {
+            position: fixed;
+            width: 2px;
+            height: 2px;
+            background: #ffd700;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ffd700;
+            animation: shootingStar 3s linear infinite;
+            top: 10%;
+            left: 0;
+            z-index: 1;
+        }
+
+        .shooting-star:nth-child(2) {
+            animation-delay: 1s;
+            top: 20%;
+        }
+
+        .shooting-star:nth-child(3) {
+            animation-delay: 2s;
+            top: 30%;
+        }
     </style>
 </head>
 <body>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    
     <div class="container">
         <div class="header">
-            <h1>🎨 Alathea's Art Manager</h1>
+            <h1>🌟 Alathea's Art Manager 🌟</h1>
             <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
         <div class="grid">
-            <div class="form-card">
-                <h2>Upload New Artwork</h2>
+            <div class="form-card cosmic-accent">
+                <h2>Upload New Creation</h2>
                 <form id="uploadForm">
-                    <label for="file">Image File</label>
+                    <label for="file">🗂 Image File</label>
                     <input type="file" id="file" name="file" accept="image/*" required>
                     
-                    <label for="title">Title</label>
+                    <label for="title">✨ Title</label>
                     <input type="text" id="title" name="title" required>
 
-                    <label for="alt_text">Alt Text (optional, for screen readers)</label>
+                    <label for="alt_text">👁️ Alt Text (for accessibility)</label>
                     <input type="text" id="alt_text" name="alt_text" placeholder="Defaults to title if left blank">
                     
-                    <label for="year_made">Year Made</label>
-                    <input type="number" id="year_made" name="year_made" placeholder="e.g., 2023" required>
+                    <label for="year_made">⏳ Year Made</label>
+                    <input type="number" id="year_made" name="year_made" placeholder="e.g., 2024" required>
                     
-                    <label for="month_made">Month Made (optional)</label>
+                    <label for="month_made">📅 Month Made (optional)</label>
                     <input type="number" id="month_made" name="month_made" placeholder="1-12" min="1" max="12">
                     
-                    <label for="day_made">Day Made (optional)</label>
+                    <label for="day_made">📆 Day Made (optional)</label>
                     <input type="number" id="day_made" name="day_made" placeholder="1-31" min="1" max="31">
                     
-                    <label for="color_tag">Color Tag</label>
+                    <label for="color_tag">🎨 Color Tag</label>
                     <select id="color_tag" name="color_tag" required>
                         <!-- Options will be populated by JS -->
                     </select>
 
-                    <label for="description">Description (optional)</label>
-                    <textarea id="description" name="description"></textarea>
+                    <label for="description">� Description (optional)</label>
+                    <textarea id="description" name="description" placeholder="Tell the story of your creation..."></textarea>
                     
-                    <label for="credit_text">Credit Text (optional)</label>
-                    <input type="text" id="credit_text" name="credit_text" placeholder="e.g., Character by Jane Doe">
+                    <label for="credit_text">🔗 Credit Text (optional)</label>
+                    <input type="text" id="credit_text" name="credit_text" placeholder="e.g., Inspired by the void...">
                     
-                    <label for="credit_url">Credit URL (optional)</label>
+                    <label for="credit_url">🔗 Credit URL (optional)</label>
                     <input type="url" id="credit_url" name="credit_url" placeholder="e.g., https://janedoe.social">
 
                     <label class="checkbox-label">
-                        <input type="checkbox" id="is_sensitive" name="is_sensitive" value="true"> Is Sensitive Content (16+)?
+                        <input type="checkbox" id="is_sensitive" name="is_sensitive" value="true"> 
+                        🌙 Is Sensitive Content (16+)?
                     </label>
                     <button type="submit">Upload & Update Gallery</button>
-                    <button type="button" id="cancelEditBtn" style="display: none; background-color: #6c757d; margin-top: 0.5rem;" class="button">Cancel Edit</button>
+                    <button type="button" id="cancelEditBtn" style="display: none; background: linear-gradient(135deg, #4b0082, #2f1b69); margin-top: 1rem;" class="button">Cancel Edit</button>
                 </form>
-                <hr style="margin: 2rem 0; border: 1px solid #eee;">
+                <hr>
                 <h2>Manual Sync</h2>
-                <button onclick="manualUpdate()">Force Update Neocities Gallery</button>
+                <button onclick="manualUpdate()">Force Update Neocities</button>
             </div>
             
             <div class="image-card">
-                <h2>Uploaded Images (<span id="imageCount">0</span>)</h2>
+                <h2>Art Collection (<span id="imageCount">0</span>)</h2>
                 <div class="image-gallery" id="imageGallery">
                     <!-- Images will be populated by JS -->
                 </div>
