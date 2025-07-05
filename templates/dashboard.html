@@ -327,12 +327,10 @@
             object-fit: cover; 
             display: block;
             transition: transform 0.3s ease;
-            filter: brightness(0.9) contrast(1.1);
         }
 
         .image-item:hover img {
             transform: scale(1.05);
-            filter: brightness(1) contrast(1.2);
         }
 
         .image-info { 
@@ -383,10 +381,6 @@
             box-shadow: 0 5px 15px rgba(32, 178, 170, 0.4);
         }
 
-        .copy-btn::after {
-            content: ' 📋';
-        }
-
         .delete-btn { 
             background: linear-gradient(135deg, #dc143c, #8b0000);
             box-shadow: 0 3px 10px rgba(220, 20, 60, 0.3);
@@ -396,10 +390,6 @@
             box-shadow: 0 5px 15px rgba(220, 20, 60, 0.4);
         }
 
-        .delete-btn::after {
-            content: ' 🗑️';
-        }
-
         .edit-btn { 
             background: linear-gradient(135deg, #ffa500, #ff8c00);
             box-shadow: 0 3px 10px rgba(255, 165, 0, 0.3);
@@ -407,10 +397,6 @@
 
         .edit-btn:hover { 
             box-shadow: 0 5px 15px rgba(255, 165, 0, 0.4);
-        }
-
-        .edit-btn::after {
-            content: ' ✏️';
         }
 
         #toast { 
@@ -576,16 +562,16 @@
             <div class="form-card cosmic-accent">
                 <h2>Upload New Creation</h2>
                 <form id="uploadForm">
-                    <label for="file">🗂 Image File</label>
+                    <label for="file">🎨 Image File</label>
                     <input type="file" id="file" name="file" accept="image/*" required>
                     
-                    <label for="title">✨ Title</label>
+                    <label for="title">🎨 Title</label>
                     <input type="text" id="title" name="title" required>
 
                     <label for="alt_text">👁️ Alt Text (for accessibility)</label>
                     <input type="text" id="alt_text" name="alt_text" placeholder="Defaults to title if left blank">
                     
-                    <label for="year_made">⏳ Year Made</label>
+                    <label for="year_made">📅 Year Made</label>
                     <input type="number" id="year_made" name="year_made" placeholder="e.g., 2024" required>
                     
                     <label for="month_made">📅 Month Made (optional)</label>
@@ -599,7 +585,7 @@
                         <!-- Options will be populated by JS -->
                     </select>
 
-                    <label for="description">� Description (optional)</label>
+                    <label for="description">🎨 Description (optional)</label>
                     <textarea id="description" name="description" placeholder="Tell the story of your creation..."></textarea>
                     
                     <label for="credit_text">🔗 Credit Text (optional)</label>
@@ -610,7 +596,7 @@
 
                     <label class="checkbox-label">
                         <input type="checkbox" id="is_sensitive" name="is_sensitive" value="true"> 
-                        🌙 Is Sensitive Content (16+)?
+                        🔞 Is Sensitive Content?
                     </label>
                     <button type="submit">Upload & Update Gallery</button>
                     <button type="button" id="cancelEditBtn" style="display: none; background: linear-gradient(135deg, #4b0082, #2f1b69); margin-top: 1rem;" class="button">Cancel Edit</button>
