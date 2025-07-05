@@ -128,17 +128,12 @@
             text-shadow: 0 0 10px rgba(255, 192, 203, 0.5);
         }
 
-        h2::before {
-            content: '🌙';
-            margin-right: 0.5rem;
-        }
-
         h2::after {
             content: '';
             position: absolute;
             bottom: -8px;
             left: 0;
-            width: 90px;
+            width: 100%;
             height: 3px;
             background: linear-gradient(135deg, #ff69b4, #9370db, #87ceeb);
             border-radius: 2px;
@@ -157,10 +152,6 @@
             padding: 2rem; 
             border-radius: 25px; 
             border: 2px solid rgba(255, 192, 203, 0.2);
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.5),
-                0 0 20px rgba(255, 105, 180, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05);
             transition: all 0.3s ease;
             position: relative;
         }
@@ -170,7 +161,7 @@
             box-shadow: 
                 0 15px 40px rgba(0, 0, 0, 0.6),
                 0 0 30px rgba(255, 105, 180, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+                inset 0 1px 0 rgba(255, 255, 255, 0.5);
             border-color: rgba(255, 192, 203, 0.4);
         }
 
@@ -327,10 +318,6 @@
             object-fit: cover; 
             display: block;
             transition: transform 0.3s ease;
-        }
-
-        .image-item:hover img {
-            transform: scale(1.05);
         }
 
         .image-info { 
@@ -560,12 +547,12 @@
         </div>
         <div class="grid">
             <div class="form-card cosmic-accent">
-                <h2>Upload New Creation</h2>
+                <h2>✧ Upload New Creation ✧</h2>
                 <form id="uploadForm">
-                    <label for="file">🎨 Image File</label>
+                    <label for="file">📂 Image File</label>
                     <input type="file" id="file" name="file" accept="image/*" required>
                     
-                    <label for="title">🎨 Title</label>
+                    <label for="title">📝 Title</label>
                     <input type="text" id="title" name="title" required>
 
                     <label for="alt_text">👁️ Alt Text (for accessibility)</label>
@@ -602,12 +589,12 @@
                     <button type="button" id="cancelEditBtn" style="display: none; background: linear-gradient(135deg, #4b0082, #2f1b69); margin-top: 1rem;" class="button">Cancel Edit</button>
                 </form>
                 <hr>
-                <h2>Manual Sync</h2>
+                <h2>🪩 Manual Sync</h2>
                 <button onclick="manualUpdate()">Force Update Neocities</button>
             </div>
             
             <div class="image-card">
-                <h2>Art Collection (<span id="imageCount">0</span>)</h2>
+                <h2>🌙 Art Collection (<span id="imageCount">0</span>)</h2>
                 <div class="image-gallery" id="imageGallery">
                     <!-- Images will be populated by JS -->
                 </div>
