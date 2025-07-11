@@ -31,7 +31,6 @@
         input::placeholder,textarea::placeholder{color:rgba(226,232,240,0.5)}
         textarea{min-height:100px;resize:vertical}
         button,.button{background:linear-gradient(135deg,#ff69b4 0%,#9370db 50%,#4b0082 100%);color:white;border:none;padding:1rem 2rem;border-radius:20px;font-size:1rem;font-weight:600;cursor:pointer;transition:all 0.3s ease;text-decoration:none;display:inline-block;text-align:center;position:relative;overflow:hidden}
-        button::before,.button::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);transition:left 0.5s}
         button:hover::before,.button:hover::before{left:100%}
         button:active,.button:active{transform:translateY(-1px) scale(1.02)}
         .image-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1.5rem;margin-bottom:2rem}
@@ -48,7 +47,6 @@
         .edit-btn{background:linear-gradient(135deg,#ffa500,#ff8c00)}
         .pagination{display:flex;justify-content:center;align-items:center;gap:1rem;margin-top:2rem}
         .pagination button{padding:0.5rem 1rem;font-size:0.9rem;background:linear-gradient(135deg,#4b0082,#2f1b69);border:2px solid rgba(255,192,203,0.3);border-radius:10px;color:#e2e8f0;cursor:pointer;transition:all 0.3s ease;min-width:40px}
-        .pagination button:hover:not(:disabled){background:linear-gradient(135deg,#ff69b4,#9370db);border-color:rgba(255,192,203,0.6)}
         .pagination button:disabled{opacity:0.4;cursor:not-allowed}
         .pagination button.active{background:linear-gradient(135deg,#ff69b4,#9370db);border-color:#ffc0cb}
         .pagination-info{color:#a0aec0;font-size:0.9rem;margin:0 1rem}
@@ -64,7 +62,6 @@
         hr{margin:2rem 0;border:none;height:2px;background:linear-gradient(90deg,transparent,rgba(255,192,203,0.3),rgba(255,105,180,0.5),rgba(255,192,203,0.3),transparent);border-radius:1px}
         @media (max-width:768px){.grid{grid-template-columns:1fr}.container{padding:1rem}.header{flex-direction:column;gap:1rem;text-align:center}h1{font-size:2rem}.image-gallery{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}.pagination{flex-wrap:wrap;gap:0.5rem}}
         button:disabled{opacity:.7;cursor:not-allowed;position:relative}
-        button:disabled::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:20px;border:2px solid rgba(255,192,203,0.3);border-top:2px solid #ffc0cb;border-radius:50%;animation:spin 1s linear infinite}
         @keyframes spin{0%{transform:translate(-50%,-50%) rotate(0deg)}100%{transform:translate(-50%,-50%) rotate(360deg)}}
         .cosmic-accent{position:relative}
         @keyframes shootingStar{0%{transform:translateX(-100px) translateY(-100px);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateX(100vw) translateY(100vh);opacity:0}}
