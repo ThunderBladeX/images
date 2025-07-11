@@ -3,480 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 x=%22-.07em%22 font-size=%2290%22>🚀</text></svg>">
+    <title>Alathea's Art Gallery - Roadside Haven</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 x=%22-.07em%22 font-size=%2290%22>🍰</text></svg>">
+    <link href="https://fonts.cdnfonts.com/css/americana" rel="stylesheet">
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(ellipse at top,#0f0f23 0%,#1a0033 25%,#2d1b69 75%,#000000 100%);min-height:100vh;color:#e2e8f0;position:relative;overflow-x:hidden}
-        body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(2px 2px at 20px 30px,#ffc0cb,transparent),radial-gradient(2px 2px at 40px 70px,#87ceeb,transparent),radial-gradient(1px 1px at 90px 40px,#ffd700,transparent),radial-gradient(1px 1px at 130px 80px,#ff69b4,transparent),radial-gradient(2px 2px at 160px 30px,#9370db,transparent),radial-gradient(1px 1px at 200px 90px,#00ffff,transparent),radial-gradient(1px 1px at 250px 20px,#ff1493,transparent),radial-gradient(2px 2px at 300px 60px,#98fb98,transparent);background-repeat:repeat;background-size:350px 250px;animation:twinkle 8s ease-in-out infinite alternate,drift 20s ease-in-out infinite;pointer-events:none;z-index:1}
-        body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="0.5" fill="rgba(255,192,203,0.3)"/><circle cx="80" cy="40" r="0.3" fill="rgba(135,206,235,0.4)"/><circle cx="40" cy="80" r="0.4" fill="rgba(255,105,180,0.2)"/><circle cx="60" cy="10" r="0.2" fill="rgba(255,215,0,0.3)"/></svg>') repeat;background-size:200px 200px;animation:float 15s ease-in-out infinite,rotate 30s linear infinite;pointer-events:none;z-index:1}
-        @keyframes twinkle{0%,100%{opacity:.3}50%{opacity:1}}
-        @keyframes drift{0%,100%{transform:translateY(0px) translateX(0px)}25%{transform:translateY(-10px) translateX(5px)}75%{transform:translateY(10px) translateX(-5px)}}
-        @keyframes float{0%,100%{transform:translateY(0px) rotate(0deg)}33%{transform:translateY(-15px) rotate(120deg)}66%{transform:translateY(15px) rotate(240deg)}}
-        @keyframes rotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-        .container{max-width:1400px;margin:0 auto;padding:2rem;position:relative;z-index:2}
-        .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;background:rgba(15,15,35,0.8);border-radius:25px;padding:1.5rem 2rem;border:2px solid rgba(255,192,203,0.3)}
-        h1{font-size:2.5rem;font-weight:700;background:linear-gradient(135deg,#ffc0cb 0%,#ff69b4 25%,#9370db 50%,#87ceeb 75%,#ffd700 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-shadow:0 0 20px rgba(255,105,180,0.5);filter:drop-shadow(0 2px 4px rgba(0,0,0,0.8));position:relative}
-        @keyframes pulse{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.2);opacity:1}}
-        h2{color:#ffc0cb;font-size:1.5rem;font-weight:600;margin-bottom:1.5rem;position:relative;text-shadow:0 0 10px rgba(255,192,203,0.5)}
-        h2::after{content:'';position:absolute;bottom:-8px;left:0;width:100%;height:3px;background:linear-gradient(135deg,#ff69b4,#9370db,#87ceeb);border-radius:2px}
-        .grid{display:grid;grid-template-columns:380px 1fr;gap:2rem;align-items:start}
-        .form-card,.image-card{background:rgba(15,15,35,0.9);padding:2rem;border-radius:25px;border:2px solid rgba(255,192,203,0.2);transition:all 0.3s ease;position:relative}
-        .form-card::before,.image-card::before{content:'⭐';position:absolute;top:-5px;right:-5px;font-size:1.2rem;animation:sparkle 3s ease-in-out infinite}
-        .form-card::after,.image-card::after{content:'🌟';position:absolute;bottom:-5px;left:-5px;font-size:1rem;animation:sparkle 3s ease-in-out infinite reverse}
-        @keyframes sparkle{0%,100%{transform:scale(1) rotate(0deg);opacity:.7}50%{transform:scale(1.3) rotate(180deg);opacity:1}}
-        label{display:block;font-weight:600;margin-bottom:.5rem;color:#ffc0cb;font-size:.9rem;text-transform:uppercase;letter-spacing:.5px;text-shadow:0 0 5px rgba(255,192,203,0.3)}
-        input,select,textarea{width:100%;padding:1rem;border-radius:15px;border:2px solid rgba(255,192,203,0.3);background:rgba(15,15,35,0.8);color:#e2e8f0;box-sizing:border-box;margin-bottom:1.5rem;font-size:1rem;transition:all 0.3s ease}
-        input:focus,select:focus,textarea:focus{outline:none;border-color:#ff69b4;background:rgba(15,15,35,0.9);transform:translateY(-2px)}
-        input::placeholder,textarea::placeholder{color:rgba(226,232,240,0.5)}
-        textarea{min-height:100px;resize:vertical}
-        button,.button{background:linear-gradient(135deg,#ff69b4 0%,#9370db 50%,#4b0082 100%);color:white;border:none;padding:1rem 2rem;border-radius:20px;font-size:1rem;font-weight:600;cursor:pointer;transition:all 0.3s ease;text-decoration:none;display:inline-block;text-align:center;position:relative;overflow:hidden;text-shadow:0 1px 2px rgba(0,0,0,0.5)}
-        button::before,.button::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);transition:left 0.5s}
-        button:hover::before,.button:hover::before{left:100%}
-        button:active,.button:active{transform:translateY(-1px) scale(1.02)}
-        .image-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1.5rem;margin-bottom:2rem}
-        .image-item{border:2px solid rgba(255,192,203,0.2);border-radius:20px;overflow:hidden;position:relative;background:rgba(15,15,35,0.9);transition:all 0.3s ease}
-        .image-item:hover{transform:translateY(-8px) scale(1.03);border-color:rgba(255,192,203,0.5)}
-        .image-item:hover::before{opacity:1;animation:sparkle 2s ease-in-out infinite}
-        .image-item img{width:100%;height:200px;object-fit:cover;display:block;transition:transform 0.3s ease}
-        .image-info{padding:1.5rem}
-        .image-title{font-weight:700;margin:0 0 .8rem;color:#ffc0cb;font-size:1.1rem;text-shadow:0 0 5px rgba(255,192,203,0.3)}
-        .image-meta{font-size:.9rem;color:#a0aec0;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
-        .image-meta::before{content:'🕐';font-size:.8rem}
-        .actions{display:flex;gap:.5rem}
-        .copy-btn,.delete-btn,.edit-btn{font-size:.85rem;padding:.6rem 1rem;border-radius:12px;flex-grow:1;font-weight:500}
-        .copy-btn{background:linear-gradient(135deg,#20b2aa,#008b8b)}
-        .delete-btn{background:linear-gradient(135deg,#dc143c,#8b0000)}
-        .edit-btn{background:linear-gradient(135deg,#ffa500,#ff8c00)}
-        .pagination{display:flex;justify-content:center;align-items:center;gap:1rem;margin-top:2rem}
-        .pagination button{padding:0.5rem 1rem;font-size:0.9rem;background:linear-gradient(135deg,#4b0082,#2f1b69);border:2px solid rgba(255,192,203,0.3);border-radius:10px;color:#e2e8f0;cursor:pointer;transition:all 0.3s ease;min-width:40px}
-        .pagination button:hover:not(:disabled){background:linear-gradient(135deg,#ff69b4,#9370db);border-color:rgba(255,192,203,0.6)}
-        .pagination button:disabled{opacity:0.4;cursor:not-allowed}
-        .pagination button.active{background:linear-gradient(135deg,#ff69b4,#9370db);border-color:#ffc0cb}
-        .pagination-info{color:#a0aec0;font-size:0.9rem;margin:0 1rem}
-        .loading{text-align:center;padding:2rem;color:#a0aec0;font-size:1.1rem}
-        .loading::after{content:'';display:inline-block;width:20px;height:20px;border:2px solid rgba(255,192,203,0.3);border-top:2px solid #ffc0cb;border-radius:50%;animation:spin 1s linear infinite;margin-left:0.5rem}
-        #toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:rgba(15,15,35,0.95);color:#ffc0cb;padding:1rem 2rem;border-radius:20px;opacity:0;transition:all 0.5s ease;z-index:1000;border:2px solid rgba(255,192,203,0.3)}
-        .checkbox-label{display:flex;align-items:center;gap:.8rem;margin-bottom:1.5rem;cursor:pointer}
-        .checkbox-label input{width:auto;margin-bottom:0;appearance:none;width:24px;height:24px;border:2px solid #ff69b4;border-radius:8px;background:rgba(15,15,35,0.8);cursor:pointer;position:relative;transition:all 0.3s ease}
-        .checkbox-label input:checked{background:linear-gradient(135deg,#ff69b4,#9370db)}
-        .checkbox-label input:checked::after{content:'💖';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:12px}
-        .checkbox-label input:hover{border-color:#ffc0cb}
-        .logout-btn{background:linear-gradient(135deg,#4b0082,#2f1b69)}
-        hr{margin:2rem 0;border:none;height:2px;background:linear-gradient(90deg,transparent,rgba(255,192,203,0.3),rgba(255,105,180,0.5),rgba(255,192,203,0.3),transparent);border-radius:1px}
-        @media (max-width:768px){.grid{grid-template-columns:1fr}.container{padding:1rem}.header{flex-direction:column;gap:1rem;text-align:center}h1{font-size:2rem}.image-gallery{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}.pagination{flex-wrap:wrap;gap:0.5rem}}
-        button:disabled{opacity:.7;cursor:not-allowed;position:relative}
-        button:disabled::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:20px;border:2px solid rgba(255,192,203,0.3);border-top:2px solid #ffc0cb;border-radius:50%;animation:spin 1s linear infinite}
-        @keyframes spin{0%{transform:translate(-50%,-50%) rotate(0deg)}100%{transform:translate(-50%,-50%) rotate(360deg)}}
-        .cosmic-accent{position:relative}
-        @keyframes shootingStar{0%{transform:translateX(-100px) translateY(-100px);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateX(100vw) translateY(100vh);opacity:0}}
-        .shooting-star{position:fixed;width:2px;height:2px;background:#ffd700;border-radius:50%;animation:shootingStar 3s linear infinite;top:10%;left:0;z-index:1}
-        .shooting-star:nth-child(2){animation-delay:1s;top:20%}
-        .shooting-star:nth-child(3){animation-delay:2s;top:30%}
+        :root {
+            --campfire-smoke: #5D5D5D;
+            --copper-penny: #AD6A5A;
+            --wildflower-lilac: #C8A2C8;
+            --porch-swing: #F5E6E3;
+            --prairie-grass: #8A9A5B;
+            --cherry-cola: #8B3E3E;
+            --sun-denim: #7890A8;
+            --cherry-cola-blush: #A35F5F;
+            --sun-faded-denim: #A0B0C0;
+        }
+        body { background-color: var(--porch-swing); color: var(--campfire-smoke); font-family: 'Courier New', monospace; margin: 0; padding: 0; overflow-x: hidden; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23F5E6E3" /><path d="M0,0 L100,100 M100,0 L0,100" stroke="%23C8A2C810" stroke-width="0.5"/></svg>'); }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; position: relative; overflow-x:hidden }
+        header::after { content: ""; position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); width: 120px; height: 20px; background-color: var(--porch-swing); background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="20" viewBox="0 0 120 20"><text x="5" y="15" font-family="monospace" font-size="20" fill="%23AD6A5A"> * * * * *</text></svg>'); }
+        .main-nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-top: 20px; }
+        .nav-link { color: var(--copper-penny); text-decoration: none; padding: 8px 20px; border: 2px solid transparent; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); font-size: 0.95em; position: relative; font-weight: 500; border-radius: 25px; background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1)); }
+        .nav-link::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(45deg, var(--wildflower-lilac), var(--copper-penny)); border-radius: 25px; opacity: 0; transition: opacity 0.4s ease; z-index: -1; }
+        .nav-link:hover::before, .nav-link.active-link::before { opacity: 0.2; }
+        .nav-link:hover, .nav-link.active-link { color: var(--cherry-cola); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(139, 62, 62, 0.3); }
+        .heart-glasses { display: inline-block; transform: rotate(10deg); font-size: 1.2em; color: var(--cherry-cola); animation: heartBeat 2s ease-in-out infinite; filter: }
+        @keyframes heartBeat { 0%, 100% { transform: rotate(10deg) scale(1); } 50% { transform: rotate(10deg) scale(1.1); } }
+        header { text-align: center; padding-top: 20px; padding-bottom: 30px; margin-bottom: 30px; border-bottom: 3px dotted var(--copper-penny); position: relative; }
+        header p { padding-left: 30px; padding-right: 30px; }
+        h1 { font-family: 'Americana BT', 'Courier New', cursive; color: var(--cherry-cola); font-size: 2.5rem; margin: 0; text-shadow: 2px 2px 0px var(--porch-swing), 3px 3px 0px var(--copper-penny); letter-spacing: 2px; }
+        h2 { font-family: 'Americana BT', 'Courier New', cursive; color: var(--sun-denim); border-bottom: 1px solid var(--wildflower-lilac); padding-bottom: 5px; text-align: center; margin-top: 40px; margin-bottom: 20px; }
+        a { color: var(--cherry-cola); text-decoration: none; transition: all 0.3s ease; }
+        a:hover { color: var(--copper-penny); text-shadow: 0 0 3px var(--wildflower-lilac); }
+        .skating-animation { position: fixed; bottom: 10px; left: -100px; animation: skate 15s linear infinite; z-index: 100; font-size: 2em; }
+        @keyframes skate { 0% { left: -100px; } 100% { left: 100vw; } }
+        footer { margin-top: 50px; text-align: center; padding: 20px; border-top: 1px solid var(--wildflower-lilac); font-size: 0.8em; color: var(--campfire-smoke); }
+        .gallery-intro { text-align: center; margin-bottom: 30px; font-size: 1.1em; color: var(--campfire-smoke); font-style: italic; }
+        .gallery-grid { display: flex; flex-wrap: wrap; gap: 25px; justify-content: center; padding: 10px 0; }
+        .artwork-item { background: white; padding: 15px; border: 1px solid var(--wildflower-lilac); border-radius: 5px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 0 0 5px var(--porch-swing); width: calc(33.333% - 30px); min-width: 250px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .artwork-item:hover { transform: translateY(-5px) rotate(-1deg); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15), 0 0 0 5px var(--porch-swing); }
+        .artwork-item img { max-width: 100%; height: auto; display: block; margin-bottom: 10px; border: 1px solid var(--campfire-smoke_translucent, rgba(93, 93, 93, 0.2)); aspect-ratio: 4 / 3; object-fit: cover; }
+        .artwork-title { font-family: 'Americana BT', 'Courier New', cursive; font-size: 1.2em; color: var(--cherry-cola); margin: 10px 0 5px 0; }
+        .artwork-description { font-size: 0.85em; color: var(--campfire-smoke); margin-bottom: 10px; flex-grow: 1; }
+        .artwork-credit { font-size: 0.85em; }
+        .artwork-date { font-size: 0.75em; color: var(--sun-denim); font-style: italic; }
+        .cherry-stain { display: inline-block; width: 15px; height: 15px; background: var(--cherry-cola); border-radius: 50%; opacity: 0.5; margin: 0 5px; }
+        .modal { display: none; position: fixed; z-index: 1001; padding-top: 50px; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.85); }
+        .modal-content { margin: auto; display: block; max-width: 80%; max-height: 80vh; }
+        .modal-caption { margin: 15px auto; display: block; width: 80%; max-width: 700px; text-align: center; color: var(--porch-swing); font-size: 1.1em; font-family: 'Americana BT', 'Courier New', cursive; }
+        .close-modal { position: absolute; top: 15px; right: 35px; color: #f1f1f1; font-size: 40px; font-weight: bold; transition: 0.3s; cursor: pointer; }
+        .close-modal:hover, .close-modal:focus { color: var(--wildflower-lilac); text-decoration: none; }
+        @media (max-width: 768px) { .artwork-item { width: calc(50% - 20px); } }
+        @media (max-width: 480px) { .artwork-item { width: calc(100% - 20px); min-width: unset; } .modal-content { max-width: 95%; } }
+        .sensitive-content-wrapper { position: relative; width: 100%; cursor: pointer; overflow: hidden; border-radius: 3px; }
+        .sensitive-content-wrapper img { filter: blur(15px); transition: filter 0.3s ease-in-out; }
+        .sensitive-content-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--cherry-cola); background-color: rgba(245, 230, 227, 0.85); padding: 10px 20px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; font-family: 'Americana BT', sans-serif; text-align: center; pointer-events: none; transition: opacity 0.3s ease-in-out; border: 2px solid var(--cherry-cola-blush); }
     </style>
 </head>
 <body>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    <div class="shooting-star"></div>
-    
+    <div class="skating-animation">🛼 ✨</div>
     <div class="container">
-        <div class="header">
-            <h1>🌟 Alathea's Personal Art Manager 🌟</h1>
-            <button class="logout-btn" onclick="logout()">Logout</button>
-        </div>
-        <div class="grid">
-            <div class="form-card cosmic-accent">
-                <h2>Upload New Creation 🫧</h2>
-                <form id="uploadForm">
-                    <label for="file">📂 Image File</label>
-                    <input type="file" id="file" name="file" accept="image/*" required>
+        <header>
+            <h1>✧ Alathea's Roadside Haven ✧</h1>
+            <p><span class="heart-glasses">♡</span> Pull up a chair, grab a virtual cup of cocoa, and enjoy my art <span class="heart-glasses">♡</span></p>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About Me</a>
+                <a href="gallery.html" class="nav-link active-link">Art Gallery</a>
+                <a href="journal.html" class="nav-link">Road Journal</a>
+                <a href="playlist.html" class="nav-link">Mixtapes</a>
+            </nav>
+        </header>
+
+        <main>
+            <section id="art-gallery-section">
+                <h2>✧ Digital Canvas ✧</h2>
+                <p class="gallery-intro">Welcome to the Gallery! Click any artwork to see it larger. Art is sorted by year, then by color.</p>
+                <div class="gallery-grid">
                     
-                    <label for="title">📝 Title</label>
-                    <input type="text" id="title" name="title" required>
-
-                    <label for="alt_text">👁️ Alt Text (for accessibility)</label>
-                    <input type="text" id="alt_text" name="alt_text" placeholder="Defaults to title if left blank">
-                    
-                    <label for="year_made">📅 Year Made</label>
-                    <input type="number" id="year_made" name="year_made" placeholder="e.g., 2024" required>
-                    
-                    <label for="month_made">📅 Month Made (optional)</label>
-                    <input type="number" id="month_made" name="month_made" placeholder="1-12" min="1" max="12">
-                    
-                    <label for="day_made">📆 Day Made (optional)</label>
-                    <input type="number" id="day_made" name="day_made" placeholder="1-31" min="1" max="31">
-                    
-                    <label for="color_tag">🎨 Color Tag</label>
-                    <select id="color_tag" name="color_tag" required>
-                        <!-- Options will be populated by JS -->
-                    </select>
-
-                    <label for="description">🎨 Description (optional)</label>
-                    <textarea id="description" name="description" placeholder="Tell the story of your creation..."></textarea>
-                    
-                    <label for="credit_text">🔗 Credit Text (optional)</label>
-                    <input type="text" id="credit_text" name="credit_text" placeholder="e.g., Character by Jane Doe">
-                    
-                    <label for="credit_url">🔗 Credit URL (optional)</label>
-                    <input type="url" id="credit_url" name="credit_url" placeholder="e.g., https://janedoe.social">
-
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="is_sensitive" name="is_sensitive" value="true"> 
-                        Is Sensitive Content (16+)?
-                    </label>
-                    <button type="submit">Upload & Update Gallery</button>
-                    <button type="button" id="cancelEditBtn" style="display: none; background: linear-gradient(135deg, #4b0082, #2f1b69); margin-top: 1rem;" class="button">Cancel Edit</button>
-                </form>
-                <hr>
-                <h2>🪩 Manual Sync</h2>
-                <button onclick="manualUpdate()">Force Update Neocities</button>
-            </div>
-            
-            <div class="image-card">
-                <h2>🌙 Art Collection (<span id="imageCount">0</span>)</h2>
-                <div class="image-gallery" id="imageGallery">
-                    <!-- Images will be populated by JS -->
-                </div>
-                <div class="pagination" id="pagination">
-                    <!-- Pagination controls will be populated by JS -->
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="toast"></div>
-
-    <script>
-        const toast = document.getElementById('toast');
-        const token = localStorage.getItem('accessToken');
-        let editingImageId = null;
-        const colorTags = {{ color_tags | tojson }};
-        
-        // Pagination state
-        let currentPage = 1;
-        let imagesPerPage = 5;
-        let totalImages = 0;
-        let allImages = [];
-        let isLoading = false;
-
-        function showToast(message, isError = false) {
-            toast.textContent = message;
-            toast.style.backgroundColor = isError ? '#e44d3a' : '#333';
-            toast.style.opacity = 1;
-            setTimeout(() => { toast.style.opacity = 0; }, 3000);
-        }
-
-        function getAuthHeader() {
-            return { 'Authorization': `Bearer ${token}` };
-        }
-
-        async function fetchWithAuth(url, options = {}) {
-            const response = await fetch(url, {
-                ...options,
-                headers: {
-                    ...getAuthHeader(),
-                    ...options.headers,
-                },
-            });
-
-            if (response.status === 401) {
-                logout();
-                return;
-            }
-            return response;
-        }
-
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showToast('Markdown URL copied!');
-            }, (err) => {
-                showToast('Failed to copy!', true);
-            });
-        }
-
-        async function deleteImage(imageId) {
-            if (!confirm('Are you sure you want to delete this image? This will also update Neocities.')) return;
-            
-            try {
-                const response = await fetchWithAuth(`/api/delete/${imageId}`, { method: 'DELETE' });
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.detail || data.message);
-                showToast(data.message || 'Image deleted.');
-                await fetchImages();
-            } catch (error) {
-                showToast(`Error: ${error.message}`, true);
-            }
-        }
-
-        function startEdit(image) {
-            editingImageId = image.id;
-            
-            document.getElementById('title').value = image.title || '';
-            document.getElementById('alt_text').value = image.alt_text || '';
-            document.getElementById('year_made').value = image.year_made || '';
-            document.getElementById('month_made').value = image.month_made || '';
-            document.getElementById('day_made').value = image.day_made || '';
-            document.getElementById('color_tag').value = image.color_tag || '';
-            document.getElementById('description').value = image.description || '';
-            document.getElementById('credit_text').value = image.credit_text || '';
-            document.getElementById('credit_url').value = image.credit_url || '';
-            document.getElementById('is_sensitive').checked = image.is_sensitive;
-            
-            document.querySelector('.form-card h2').textContent = 'Edit Artwork Details';
-            document.querySelector('#uploadForm button[type="submit"]').textContent = 'Save Changes';
-
-            const fileInput = document.getElementById('file');
-            fileInput.disabled = true;
-            fileInput.required = false;
-
-            document.getElementById('cancelEditBtn').style.display = 'block';
-            document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function cancelEdit() {
-            editingImageId = null;
-            const form = document.getElementById('uploadForm');
-            form.reset();
-
-            document.querySelector('.form-card h2').textContent = 'Upload New Creation 🫧';
-            const submitButton = form.querySelector('button[type="submit"]');
-            submitButton.textContent = 'Upload & Update Gallery';
-            submitButton.disabled = false;
-
-            const fileInput = document.getElementById('file');
-            fileInput.disabled = false;
-            fileInput.required = true;
-
-            document.getElementById('cancelEditBtn').style.display = 'none';
-        }
-        
-        async function manualUpdate() {
-            showToast('Triggering Neocities update...');
-            try {
-                const response = await fetchWithAuth('/api/update-gallery', { method: 'POST' });
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.detail || data.message);
-                showToast(data.message || 'Update complete.');
-            } catch (error) {
-                showToast(`Error: ${error.message}`, true);
-            }
-        }
-        
-        async function handleUpload(event) {
-            event.preventDefault();
-            const form = event.target;
-            const formData = new FormData(form);
-            const submitButton = form.querySelector('button[type="submit"]');
-
-            let url, method, op_verb, op_gerund;
-
-            if (editingImageId) {
-                url = `/api/images/${editingImageId}`;
-                method = 'PUT';
-                formData.delete('file');
-                op_verb = 'Saving';
-                op_gerund = 'Saving changes...';
-            } else {
-                url = '/api/upload';
-                method = 'POST';
-                op_verb = 'Uploading';
-                op_gerund = 'Uploading...';
-            }
-            
-            submitButton.disabled = true;
-            submitButton.textContent = `${op_verb}...`;
-            showToast(op_gerund);
-
-            try {
-                const response = await fetchWithAuth(url, {
-                    method: method,
-                    body: formData,
-                });
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.detail || data.message);
-                
-                showToast(data.message || `${op_verb} successful!`);
-                cancelEdit();
-                await fetchImages();
-            } catch (error) {
-                showToast(`${op_verb} failed: ${error.message}`, true);
-            }
-        }
-
-        function getCurrentPageImages() {
-            const startIndex = (currentPage - 1) * imagesPerPage;
-            const endIndex = startIndex + imagesPerPage;
-            return allImages.slice(startIndex, endIndex);
-        }
-
-        function getTotalPages() {
-            return Math.ceil(totalImages / imagesPerPage);
-        }
-
-        function renderImages() {
-            const gallery = document.getElementById('imageGallery');
-            const imageCount = document.getElementById('imageCount');
-            
-            if (isLoading) {
-                gallery.innerHTML = '<div class="loading">Loading images...</div>';
-                return;
-            }
-            
-            gallery.innerHTML = '';
-            imageCount.textContent = totalImages;
-
-            const currentImages = getCurrentPageImages();
-            currentImages.forEach(image => {
-                const item = document.createElement('div');
-                item.className = 'image-item';
-                let dateString = image.year_made;
-                if (image.month_made) {
-                    dateString += `-${String(image.month_made).padStart(2, '0')}`;
-                    if (image.day_made) {
-                        dateString += `-${String(image.day_made).padStart(2, '0')}`;
-                    }
-                }
-                const safeImageJson = JSON.stringify(image).replace(/'/g, "&apos;");
-                const safeMarkdownUrl = image.markdown_url.replace(/'/g, "\\'");
-                
-                item.innerHTML = `
-                    <img src="${image.supabase_url}" alt="${image.title}" loading="lazy">
-                    <div class="image-info">
-                        <p class="image-title">${image.title}</p>
-                        <p class="image-meta">${dateString} | <span style="color:${image.color_tag};">●</span> ${image.color_tag}</p>
-                        <div class="actions">
-                            <button class="copy-btn button" onclick="copyToClipboard('${safeMarkdownUrl}')">Copy MD</button>
-                            <button class="edit-btn" data-image='${safeImageJson}' onclick="startEdit(JSON.parse(this.dataset.image))">Edit</button>
-                            <button class="delete-btn" onclick="deleteImage(${image.id})">Delete</button>
+                    {% for image in images %}
+                    <div class="artwork-item">
+                        {% if image.is_sensitive %}
+                        <div class="sensitive-content-wrapper" onclick="openModal('{{ image.supabase_url }}', this.alt, {{ image.alt_text | tojson | replace('\"', '"') | safe }})">
+                            <img src="{{ image.supabase_url }}" alt="{{ image.title | e }}">
+                            <div class="sensitive-content-overlay">16+</div>
                         </div>
+                        {% else %}
+                        <img src="{{ image.supabase_url }}" alt="{{ image.title | e }}" onclick="openModal('{{ image.supabase_url }}', this.alt, {{ image.alt_text | tojson | replace('\"', '"') | safe }})">
+                        {% endif %}
+                        <h3 class="artwork-title">{{ image.title }}</h3>
+                        {% if image.description %}
+                        <p class="artwork-description">{{ image.description }}</p>
+                        {% endif %}
+                        {% if image.credit_text and image.credit_url %}
+                        <p class="artwork-credit"><a href="{{ image.credit_url }}" target="_blank" rel="noopener noreferrer">© {{ image.credit_text }}</a></p>
+                        {% endif %}
+                        <p class="artwork-date">Created: {{ image.year_made }}{%- if image.month_made -%}-{{ "%02d"|format(image.month_made) }}{%- if image.day_made -%}-{{ "%02d"|format(image.day_made) }}{%- endif -%}{%- endif -%}</p>
                     </div>
-                `;
-                gallery.appendChild(item);
-            });
+                    {% endfor %}
+                    
+                </div>
+            </section>
+        </main>
 
-            renderPagination();
-        }
+        <footer>
+            <p>© Roadside Haven Motel & Art Gallery, Est. Whenever You Needed It Most</p>
+            <p><small>No refunds • Reality escape services available 24/7 • Follow the wildflower trail home</small></p>
+        </footer>
+    </div>
 
-        function renderPagination() {
-            const pagination = document.getElementById('pagination');
-            const totalPages = getTotalPages();
-            
-            if (totalPages <= 1) {
-                pagination.innerHTML = '';
-                return;
-            }
-
-            let paginationHTML = '';
-            
-            // Previous button
-            paginationHTML += `
-                <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
-                    ← Prev
-                </button>
-            `;
-            
-            // Page info
-            paginationHTML += `
-                <span class="pagination-info">
-                    Page ${currentPage} of ${totalPages}
-                </span>
-            `;
-            
-            // Page number buttons (show current page and up to 2 pages on each side)
-            const startPage = Math.max(1, currentPage - 2);
-            const endPage = Math.min(totalPages, currentPage + 2);
-            
-            if (startPage > 1) {
-                paginationHTML += `<button onclick="changePage(1)">1</button>`;
-                if (startPage > 2) {
-                    paginationHTML += `<span class="pagination-info">...</span>`;
-                }
-            }
-            
-            for (let i = startPage; i <= endPage; i++) {
-                paginationHTML += `
-                    <button onclick="changePage(${i})" ${i === currentPage ? 'class="active"' : ''}>
-                        ${i}
-                    </button>
-                `;
-            }
-            
-            if (endPage < totalPages) {
-                if (endPage < totalPages - 1) {
-                    paginationHTML += `<span class="pagination-info">...</span>`;
-                }
-                paginationHTML += `<button onclick="changePage(${totalPages})">${totalPages}</button>`;
-            }
-            
-            // Next button
-            paginationHTML += `
-                <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
-                    Next →
-                </button>
-            `;
-            
-            pagination.innerHTML = paginationHTML;
-        }
-
-        function changePage(newPage) {
-            const totalPages = getTotalPages();
-            if (newPage < 1 || newPage > totalPages || newPage === currentPage) return;
-            
-            currentPage = newPage;
-            renderImages();
-            
-            // Scroll to top of gallery
-            document.querySelector('.image-card').scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'start' 
-            });
-        }
-        
-        async function fetchImages() {
-            isLoading = true;
-            renderImages();
-            
-            try {
-                const response = await fetchWithAuth('/api/images');
-                if (!response.ok) throw new Error('Failed to fetch images.');
-                allImages = await response.json();
-                totalImages = allImages.length;
-                
-                // If current page is beyond available pages, reset to page 1
-                if (currentPage > getTotalPages()) {
-                    currentPage = 1;
-                }
-                
-                isLoading = false;
-                renderImages();
-            } catch (error) {
-                isLoading = false;
-                showToast(error.message, true);
-                renderImages();
-            }
-        }
-        
-        function populateColorOptions() {
-            const select = document.getElementById('color_tag');
-            select.innerHTML = colorTags.map(color => `<option value="${color}">${color.charAt(0).toUpperCase() + color.slice(1)}</option>`).join('');
-        }
-
-        function logout() {
-            localStorage.removeItem('accessToken');
-            window.location.href = '/login';
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            if (!token) {
-                window.location.href = '/login';
-                return;
-            }
-            
-            document.getElementById('uploadForm').addEventListener('submit', handleUpload);
-            document.getElementById('cancelEditBtn').addEventListener('click', cancelEdit);
-            populateColorOptions();
-            fetchImages();
-        });
+    <div id="myModal" class="modal">
+        <span class="close-modal" onclick="closeModal()">×</span>
+        <img class="modal-content" id="modalImage">
+        <div id="caption" class="modal-caption"></div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() { setInterval(function() { const sparkle = document.createElement('div'); sparkle.innerHTML = '✨'; sparkle.style.position = 'fixed'; sparkle.style.left = Math.random() * 100 + 'vw'; sparkle.style.top = Math.random() * 100 + 'vh'; sparkle.style.fontSize = (Math.random() * 10 + 10) + 'px'; sparkle.style.opacity = '0'; sparkle.style.transition = 'all 1s ease'; sparkle.style.pointerEvents = 'none'; sparkle.style.zIndex = '999'; document.body.appendChild(sparkle); setTimeout(() => { sparkle.style.opacity = '0.8'; sparkle.style.transform = `translate(${Math.random()*20-10}px, ${Math.random()*20-10}px)rotate(${Math.random()*90-45}deg)`; }, 100); setTimeout(() => { sparkle.style.opacity = '0'; }, 1500); setTimeout(() => { if(document.body.contains(sparkle)) { document.body.removeChild(sparkle); } }, 2500); }, 3000); });
+        var modal = document.getElementById("myModal");
+        var modalImg = document.getElementById("modalImage");
+        var captionText = document.getElementById("caption");
+        function openModal(src, alt, caption) { modal.style.display = "block"; modalImg.src = src; modalImg.alt = alt; captionText.innerHTML = caption; }
+        function closeModal() { modal.style.display = "none"; }
+        function addCherryStains() { const container = document.querySelector('.container'); const stain = document.createElement('div'); stain.className = 'cherry-stain'; stain.style.position = 'absolute'; stain.style.left = Math.random() * 100 + '%'; stain.style.top = Math.random() * 100 + '%'; stain.style.opacity = Math.random() * 0.3; container.appendChild(stain); }
+        for (let i = 0; i < 20; i++) { addCherryStains(); }
+        window.onclick = function(event) { if (event.target == modal) { closeModal(); } }
+        document.addEventListener('keydown', function(event) { if (event.key === "Escape") { closeModal(); } });
     </script>
 </body>
 </html>
