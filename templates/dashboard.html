@@ -34,7 +34,7 @@
         button::before,.button::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);transition:left 0.5s}
         button:hover::before,.button:hover::before{left:100%}
         button:active,.button:active{transform:translateY(-1px) scale(1.02)}
-        .image-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1.5rem}
+        .image-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1.5rem;margin-bottom:2rem}
         .image-item{border:2px solid rgba(255,192,203,0.2);border-radius:20px;overflow:hidden;position:relative;background:rgba(15,15,35,0.9);transition:all 0.3s ease}
         .image-item:hover{transform:translateY(-8px) scale(1.03);border-color:rgba(255,192,203,0.5)}
         .image-item:hover::before{opacity:1;animation:sparkle 2s ease-in-out infinite}
@@ -48,6 +48,14 @@
         .copy-btn{background:linear-gradient(135deg,#20b2aa,#008b8b)}
         .delete-btn{background:linear-gradient(135deg,#dc143c,#8b0000)}
         .edit-btn{background:linear-gradient(135deg,#ffa500,#ff8c00)}
+        .pagination{display:flex;justify-content:center;align-items:center;gap:1rem;margin-top:2rem}
+        .pagination button{padding:0.5rem 1rem;font-size:0.9rem;background:linear-gradient(135deg,#4b0082,#2f1b69);border:2px solid rgba(255,192,203,0.3);border-radius:10px;color:#e2e8f0;cursor:pointer;transition:all 0.3s ease;min-width:40px}
+        .pagination button:hover:not(:disabled){background:linear-gradient(135deg,#ff69b4,#9370db);border-color:rgba(255,192,203,0.6)}
+        .pagination button:disabled{opacity:0.4;cursor:not-allowed}
+        .pagination button.active{background:linear-gradient(135deg,#ff69b4,#9370db);border-color:#ffc0cb}
+        .pagination-info{color:#a0aec0;font-size:0.9rem;margin:0 1rem}
+        .loading{text-align:center;padding:2rem;color:#a0aec0;font-size:1.1rem}
+        .loading::after{content:'';display:inline-block;width:20px;height:20px;border:2px solid rgba(255,192,203,0.3);border-top:2px solid #ffc0cb;border-radius:50%;animation:spin 1s linear infinite;margin-left:0.5rem}
         #toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:rgba(15,15,35,0.95);color:#ffc0cb;padding:1rem 2rem;border-radius:20px;opacity:0;transition:all 0.5s ease;z-index:1000;border:2px solid rgba(255,192,203,0.3)}
         .checkbox-label{display:flex;align-items:center;gap:.8rem;margin-bottom:1.5rem;cursor:pointer}
         .checkbox-label input{width:auto;margin-bottom:0;appearance:none;width:24px;height:24px;border:2px solid #ff69b4;border-radius:8px;background:rgba(15,15,35,0.8);cursor:pointer;position:relative;transition:all 0.3s ease}
@@ -56,7 +64,7 @@
         .checkbox-label input:hover{border-color:#ffc0cb}
         .logout-btn{background:linear-gradient(135deg,#4b0082,#2f1b69)}
         hr{margin:2rem 0;border:none;height:2px;background:linear-gradient(90deg,transparent,rgba(255,192,203,0.3),rgba(255,105,180,0.5),rgba(255,192,203,0.3),transparent);border-radius:1px}
-        @media (max-width:768px){.grid{grid-template-columns:1fr}.container{padding:1rem}.header{flex-direction:column;gap:1rem;text-align:center}h1{font-size:2rem}.image-gallery{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}}
+        @media (max-width:768px){.grid{grid-template-columns:1fr}.container{padding:1rem}.header{flex-direction:column;gap:1rem;text-align:center}h1{font-size:2rem}.image-gallery{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}.pagination{flex-wrap:wrap;gap:0.5rem}}
         button:disabled{opacity:.7;cursor:not-allowed;position:relative}
         button:disabled::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:20px;border:2px solid rgba(255,192,203,0.3);border-top:2px solid #ffc0cb;border-radius:50%;animation:spin 1s linear infinite}
         @keyframes spin{0%{transform:translate(-50%,-50%) rotate(0deg)}100%{transform:translate(-50%,-50%) rotate(360deg)}}
@@ -130,6 +138,9 @@
                 <div class="image-gallery" id="imageGallery">
                     <!-- Images will be populated by JS -->
                 </div>
+                <div class="pagination" id="pagination">
+                    <!-- Pagination controls will be populated by JS -->
+                </div>
             </div>
         </div>
     </div>
@@ -140,6 +151,13 @@
         const token = localStorage.getItem('accessToken');
         let editingImageId = null;
         const colorTags = {{ color_tags | tojson }};
+        
+        // Pagination state
+        let currentPage = 1;
+        let imagesPerPage = 5;
+        let totalImages = 0;
+        let allImages = [];
+        let isLoading = false;
 
         function showToast(message, isError = false) {
             toast.textContent = message;
@@ -184,7 +202,7 @@
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.detail || data.message);
                 showToast(data.message || 'Image deleted.');
-                fetchImages();
+                await fetchImages();
             } catch (error) {
                 showToast(`Error: ${error.message}`, true);
             }
@@ -220,7 +238,7 @@
             const form = document.getElementById('uploadForm');
             form.reset();
 
-            document.querySelector('.form-card h2').textContent = 'Upload New Artwork';
+            document.querySelector('.form-card h2').textContent = 'Upload New Creation 🫧';
             const submitButton = form.querySelector('button[type="submit"]');
             submitButton.textContent = 'Upload & Update Gallery';
             submitButton.disabled = false;
@@ -279,32 +297,50 @@
                 
                 showToast(data.message || `${op_verb} successful!`);
                 cancelEdit();
-                fetchImages();
+                await fetchImages();
             } catch (error) {
                 showToast(`${op_verb} failed: ${error.message}`, true);
             }
         }
 
-        function renderImages(images) {
+        function getCurrentPageImages() {
+            const startIndex = (currentPage - 1) * imagesPerPage;
+            const endIndex = startIndex + imagesPerPage;
+            return allImages.slice(startIndex, endIndex);
+        }
+
+        function getTotalPages() {
+            return Math.ceil(totalImages / imagesPerPage);
+        }
+
+        function renderImages() {
             const gallery = document.getElementById('imageGallery');
             const imageCount = document.getElementById('imageCount');
+            
+            if (isLoading) {
+                gallery.innerHTML = '<div class="loading">Loading images...</div>';
+                return;
+            }
+            
             gallery.innerHTML = '';
-            imageCount.textContent = images.length;
+            imageCount.textContent = totalImages;
 
-            images.forEach(image => {
+            const currentImages = getCurrentPageImages();
+            currentImages.forEach(image => {
                 const item = document.createElement('div');
                 item.className = 'image-item';
                 let dateString = image.year_made;
                 if (image.month_made) {
                     dateString += `-${String(image.month_made).padStart(2, '0')}`;
-                    if (image.day_made) {dateString += `-${String(image.day_made).padStart(2, '0')}`;
-                                        }
+                    if (image.day_made) {
+                        dateString += `-${String(image.day_made).padStart(2, '0')}`;
+                    }
                 }
                 const safeImageJson = JSON.stringify(image).replace(/'/g, "&apos;");
                 const safeMarkdownUrl = image.markdown_url.replace(/'/g, "\\'");
                 
                 item.innerHTML = `
-                    <img src="${image.supabase_url}" alt="${image.title}">
+                    <img src="${image.supabase_url}" alt="${image.title}" loading="lazy">
                     <div class="image-info">
                         <p class="image-title">${image.title}</p>
                         <p class="image-meta">${dateString} | <span style="color:${image.color_tag};">●</span> ${image.color_tag}</p>
@@ -317,16 +353,106 @@
                 `;
                 gallery.appendChild(item);
             });
+
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const pagination = document.getElementById('pagination');
+            const totalPages = getTotalPages();
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+
+            let paginationHTML = '';
+            
+            // Previous button
+            paginationHTML += `
+                <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                    ← Prev
+                </button>
+            `;
+            
+            // Page info
+            paginationHTML += `
+                <span class="pagination-info">
+                    Page ${currentPage} of ${totalPages}
+                </span>
+            `;
+            
+            // Page number buttons (show current page and up to 2 pages on each side)
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+            
+            if (startPage > 1) {
+                paginationHTML += `<button onclick="changePage(1)">1</button>`;
+                if (startPage > 2) {
+                    paginationHTML += `<span class="pagination-info">...</span>`;
+                }
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHTML += `
+                    <button onclick="changePage(${i})" ${i === currentPage ? 'class="active"' : ''}>
+                        ${i}
+                    </button>
+                `;
+            }
+            
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    paginationHTML += `<span class="pagination-info">...</span>`;
+                }
+                paginationHTML += `<button onclick="changePage(${totalPages})">${totalPages}</button>`;
+            }
+            
+            // Next button
+            paginationHTML += `
+                <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                    Next →
+                </button>
+            `;
+            
+            pagination.innerHTML = paginationHTML;
+        }
+
+        function changePage(newPage) {
+            const totalPages = getTotalPages();
+            if (newPage < 1 || newPage > totalPages || newPage === currentPage) return;
+            
+            currentPage = newPage;
+            renderImages();
+            
+            // Scroll to top of gallery
+            document.querySelector('.image-card').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
         }
         
         async function fetchImages() {
-             try {
+            isLoading = true;
+            renderImages();
+            
+            try {
                 const response = await fetchWithAuth('/api/images');
                 if (!response.ok) throw new Error('Failed to fetch images.');
-                const images = await response.json();
-                renderImages(images);
+                allImages = await response.json();
+                totalImages = allImages.length;
+                
+                // If current page is beyond available pages, reset to page 1
+                if (currentPage > getTotalPages()) {
+                    currentPage = 1;
+                }
+                
+                isLoading = false;
+                renderImages();
             } catch (error) {
+                isLoading = false;
                 showToast(error.message, true);
+                renderImages();
             }
         }
         
