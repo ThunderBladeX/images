@@ -38,6 +38,8 @@
         h2 { font-family: 'Americana BT', 'Courier New', cursive; color: var(--sun-denim); border-bottom: 1px solid var(--wildflower-lilac); padding-bottom: 5px; text-align: center; margin-top: 40px; margin-bottom: 20px; }
         a { color: var(--cherry-cola); text-decoration: none; transition: all 0.3s ease; }
         a:hover { color: var(--copper-penny); text-shadow: 0 0 3px var(--wildflower-lilac); }
+        a::after { content: ''; position: absolute; bottom: -2px; left: 0; width:0; height: 2px; background: linear-gradient(90deg, var(--copper-penny), var(--cherry-cola)); transition: width 0.3s ease; }
+        a:hover::after { width: 100%; }
         .skating-animation { position: fixed; bottom: 10px; left: -100px; animation: skate 15s linear infinite; z-index: 101; font-size: 2em; white-space: nowrap; }
         .skating-animation span { margin-right: 0.5em; }
         @keyframes skate { 0% { left: -100px; } 100% { left: 100vw; } }
@@ -92,8 +94,8 @@
 
         <main>
             <section id="art-gallery-section">
-                <h2>✧ Digital Canvas ✧</h2>
-                <p class="gallery-intro">Welcome to the Gallery! Click any artwork to see it larger. Art is sorted by year, then by color. Day and month are not counted for sorting.</p>
+                <h2>✧ Welcome, Love! ✧</h2>
+                <p class="gallery-intro">Click any artwork to see it larger. Art is sorted by year, then by color. Day and month are not considered in sorting, they are only information.</p>
                 <div class="gallery-grid">
                     
                     {% for image in images %}
