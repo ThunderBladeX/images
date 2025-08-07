@@ -17,6 +17,23 @@
             --sun-denim: #7890A8;
             --cherry-cola-blush: #A35F5F;
             --sun-faded-denim: #A0B0C0;
+            --paper-bg:#fffcf7;
+            --warm-beige:#f7f3e9;
+            --polaroid-bg:#fff;
+            --vintage-yellow:#f4e8c1;
+            --mint-green:#b8e6d1;
+            --lavender:#e3d9e8;
+            --pink-stroke:#ffc0cb;
+            --gothic-grid:#e0cde3;
+            --text-main:#2d2d2d;
+            --text-accent:#d15c7e;
+            --text-deep:#8b4069;
+            --sticker-border:#ffffc9;
+            --dreamy-pink:#ffd6e8;
+            --sunset-orange:#ffa885;
+            --soft-mint:#c3f0ca;
+            --dusty-rose:#d4a5a5;
+            --butter-cream:#fff8dc
         }
         body { background-color: var(--porch-swing); color: var(--campfire-smoke); font-family: 'Courier New', monospace; margin: 0; padding: 0; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23F5E6E3" /><path d="M0,0 L100,100 M100,0 L0,100" stroke="%23C8A2C810" stroke-width="0.5"/></svg>'); overflow-x: hidden; }
         body::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--vintage-yellow), var(--copper-penny), var(--cherry-cola), var(--copper-penny), var(--vintage-yellow)); opacity: 0.6; border-radius: 0 0 4px 4px; }
@@ -94,8 +111,6 @@
 
         <main>
             <section id="art-gallery-section">
-                <h2>✧ Welcome, Lovely! ✧</h2>
-                <p class="gallery-intro">Click any artwork to see it larger. Art is sorted by year, then by color. Day and month are not considered in sorting, they are only information.</p>
                 <div class="gallery-grid">
                     
                     {% for image in images %}
