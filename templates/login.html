@@ -95,6 +95,7 @@
             margin-bottom: 2rem;
             letter-spacing: -0.02em;
             filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.8));
+            animation: glow-pulse 2s ease-in-out infinite alternate;
         }
 
         @keyframes glow-pulse {
@@ -188,6 +189,7 @@
 
         button:hover {
             transform: translateY(-3px) scale(1.05);
+            animation: button-glow 0.5s ease-in-out;
             }
 
         button:hover::before {
@@ -228,6 +230,16 @@
         @keyframes cosmic-rotate {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            h1,
+            button:hover,
+            form-group::before {
+                filter: none; 
+                animation: none; 
+                drop-shadow: none; 
+            }
         }
 
         @media (max-width: 480px) {
