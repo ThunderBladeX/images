@@ -113,18 +113,29 @@ def upload_to_supabase(file_content: bytes, filename: str, content_type: str) ->
         logger.error(f"Failed to upload to Supabase: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to upload to Supabase: {str(e)}")
 
-def update_neocities_gallery(db: Session):
+def update_neocities_gallery(db: Session, sort_by: str = "year_color"):
     if not NEOCITIES_USERNAME or not NEOCITIES_API_KEY:
         logger.warning("Neocities credentials not set. Skipping update.")
         return "Neocities credentials not set. Skipped update."
-    logger.info("Starting Neocities gallery update with custom sorting...")
+    logger.info(f"Starting Neocities gallery update with sorting: {sort_by}...")
     try:
-        logger.info("Fetching images for Neocities gallery update with custom sorting...")
-        color_order_case = case(
-            {color.value: i for i, color in enumerate(COLOR_ORDER)},
-            value=ImageRecord.color_tag
-        )
-        images = db.query(ImageRecord).order_by(ImageRecord.year_made.desc(), color_order_case).all()
+        logger.info("Fetching images for Neocities gallery update...")
+        
+        if sort_by == "year":
+            images = db.query(ImageRecord).order_by(ImageRecord.year_made.desc()).all()
+        elif sort_by == "color":
+            color_order_case = case(
+                {color.value: i for i, color in enumerate(COLOR_ORDER)},
+                value=ImageRecord.color_tag
+            )
+            images = db.query(ImageRecord).order_by(color_order_case, ImageRecord.year_made.desc()).all()
+        else:
+            color_order_case = case(
+                {color.value: i for i, color in enumerate(COLOR_ORDER)},
+                value=ImageRecord.color_tag
+            )
+            images = db.query(ImageRecord).order_by(ImageRecord.year_made.desc(), color_order_case).all()
+        
         logger.info(f"Found {len(images)} images. Generating HTML...")
 
         template = templates.get_template("neocities_gallery_template.html")
@@ -169,8 +180,21 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return {"access_token": access_token, "token_type": "bearer"}
 
 @api_router.get("/api/images")
-async def get_images(db: Session = Depends(get_db), _=Depends(get_current_user)):
-    images = db.query(ImageRecord).order_by(ImageRecord.uploaded_at.desc()).all()
+async def get_images(
+    sort_by: str = "uploaded",
+    db: Session = Depends(get_db), 
+    _=Depends(get_current_user)
+):
+    if sort_by == "year":
+        images = db.query(ImageRecord).order_by(ImageRecord.year_made.desc()).all()
+    elif sort_by == "color":
+        color_order_case = case(
+            {color.value: i for i, color in enumerate(COLOR_ORDER)},
+            value=ImageRecord.color_tag
+        )
+        images = db.query(ImageRecord).order_by(color_order_case, ImageRecord.year_made.desc()).all()
+    else:
+        images = db.query(ImageRecord).order_by(ImageRecord.uploaded_at.desc()).all()
     return images
 
 @api_router.post("/api/upload")
