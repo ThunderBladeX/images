@@ -430,13 +430,18 @@
                 block: 'start' 
             });
         }
-        
-        async function fetchImages() {
+
+        document.getElementById('sortDropdown').addEventListener('change', async (e) => {
+            const sortBy = e.target.value;
+            await fetchImages(sortBy);
+        });
+
+        async function fetchImages(sortBy = 'uploaded') {
             isLoading = true;
             renderImages();
             
             try {
-                const response = await fetchWithAuth('/api/images');
+                const response = await fetchWithAuth(`/api/images?sort_by=${sortBy}`);
                 if (!response.ok) throw new Error('Failed to fetch images.');
                 allImages = await response.json();
                 totalImages = allImages.length;
