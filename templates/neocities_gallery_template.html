@@ -46,7 +46,7 @@
         .nav-link:hover::before, .nav-link.active-link::before { opacity: 0.2; font-weight: normal }
         .nav-link:hover, .nav-link.active-link { color: var(--cherry-cola); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(139, 62, 62, 0.3); font-weight:normal; }
         .nav-link.active-link:hover::after { width: 0%; }
-        .heart-glasses { display: inline-block; transform: rotate(10deg); font-size: 1.2em; color: var(--cherry-cola); animation: heartBeat 2s ease-in-out infinite; filter: }
+        .heart-glasses { display: inline-block; transform: rotate(10deg); font-size: 1.2em; color: var(--cherry-cola); animation: heartBeat 2s ease-in-out infinite; }
         @keyframes heartBeat { 0%, 100% { transform: rotate(10deg) scale(1); } 50% { transform: rotate(10deg) scale(1.1); } }
         header { text-align: center; padding-top: 20px; padding-bottom: 30px; margin: 0 auto 30px auto; border-bottom: 3px dotted var(--copper-penny); position: relative; border-radius: 15px; width: 100%; max-width: 100%; box-sizing: border-box; background: linear-gradient(135deg, #FFF2EF, var(--porch-swing)); }
         header p { padding-left: 30px; padding-right: 30px; }
@@ -57,6 +57,13 @@
         a:hover { color: var(--copper-penny); text-shadow: 0 0 3px var(--wildflower-lilac); }
         a::after { content: ''; position: absolute; bottom: -2px; left: 0; width:0; height: 2px; background: linear-gradient(90deg, var(--copper-penny), var(--cherry-cola)); transition: width 0.3s ease; }
         a:hover::after { width: 100%; }
+        
+        /* New Sort Controls Styling */
+        .sort-container { text-align: center; margin-bottom: 25px; font-size: 0.9em; color: var(--campfire-smoke); }
+        .sort-btn { background: var(--warm-beige); border: 1px dashed var(--copper-penny); color: var(--campfire-smoke); padding: 5px 15px; margin: 0 5px; border-radius: 15px; cursor: pointer; font-family: 'Courier New', monospace; transition: all 0.3s ease; }
+        .sort-btn:hover { background: var(--porch-swing); color: var(--cherry-cola); }
+        .sort-btn.active-sort { background: var(--cherry-cola); color: var(--porch-swing); border-style: solid; box-shadow: 0 2px 5px rgba(139, 62, 62, 0.2); }
+
         .skating-animation { position: fixed; bottom: 10px; left: -100px; animation: skate 15s linear infinite; z-index: 101; font-size: 2em; white-space: nowrap; }
         .skating-animation span { margin-right: 0.5em; }
         @keyframes skate { 0% { left: -100px; } 100% { left: 100vw; } }
@@ -66,7 +73,7 @@
         .gallery-grid { display: flex; flex-wrap: wrap; gap: 25px; justify-content: center; padding: 10px 0; }
         .artwork-item { background: white; padding: 15px; border: 1px solid var(--wildflower-lilac); border-radius: 5px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 0 0 5px var(--porch-swing); width: calc(33.333% - 30px); min-width: 250px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease; }
         .artwork-item:hover { transform: translateY(-5px) rotate(-1deg); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15), 0 0 0 5px var(--porch-swing); }
-        .artwork-item img { max-width: 100%; height: auto; display: block; margin-bottom: 10px; border: 1px solid var(--campfire-smoke_translucent, rgba(93, 93, 93, 0.2)); aspect-ratio: 4 / 3; object-fit: cover; }
+        .artwork-item img { max-width: 100%; height: auto; display: block; margin-bottom: 10px; border: 1px solid var(--campfire-smoke_translucent, rgba(93, 93, 93, 0.2)); aspect-ratio: 4 / 3; object-fit: cover; cursor: pointer; }
         .artwork-title { font-family: 'Americana BT', 'Courier New', cursive; font-size: 1.2em; color: var(--cherry-cola); margin: 10px 0 5px 0; }
         .artwork-description { font-size: 0.85em; color: var(--campfire-smoke); margin-bottom: 10px; flex-grow: 1; }
         .artwork-credit { font-size: 0.85em; }
@@ -111,17 +118,23 @@
 
         <main>
             <section id="art-gallery-section">
-                <div class="gallery-grid">
+                <div class="sort-container">
+                    Sort by: 
+                    <button class="sort-btn active-sort" id="sortByYearBtn" onclick="sortGallery('year')">Year</button>
+                    <button class="sort-btn" id="sortByColorBtn" onclick="sortGallery('color')">Color Tag</button>
+                </div>
+
+                <div class="gallery-grid" id="galleryGrid">
                     
                     {% for image in images %}
-                    <div class="artwork-item">
+                    <div class="artwork-item" data-year="{{ image.year_made }}" data-color="{{ image.color_tag.value }}" data-index="{{ loop.index0 }}">
                         {% if image.is_sensitive %}
-                        <div class="sensitive-content-wrapper" onclick="openModal('{{ image.supabase_url }}', this.alt, {{ image.alt_text | tojson | replace('\"', '"') | safe }})">
+                        <div class="sensitive-content-wrapper" onclick="openModal('{{ image.supabase_url }}', '{{ image.title | e }}', {{ image.alt_text | tojson | replace('\"', '"') | safe }})">
                             <img src="{{ image.supabase_url }}" alt="{{ image.title | e }}">
                             <div class="sensitive-content-overlay">18+</div>
                         </div>
                         {% else %}
-                        <img src="{{ image.supabase_url }}" alt="{{ image.title | e }}" onclick="openModal('{{ image.supabase_url }}', this.alt, {{ image.alt_text | tojson | replace('\"', '"') | safe }})">
+                        <img src="{{ image.supabase_url }}" alt="{{ image.title | e }}" onclick="openModal('{{ image.supabase_url }}', '{{ image.title | e }}', {{ image.alt_text | tojson | replace('\"', '"') | safe }})">
                         {% endif %}
                         <h3 class="artwork-title">{{ image.title }}</h3>
                         {% if image.description %}
@@ -158,6 +171,42 @@
         function closeModal() { modal.style.display = "none"; }
         window.onclick = function(event) { if (event.target == modal) { closeModal(); } }
         document.addEventListener('keydown', function(event) { if (event.key === "Escape") { closeModal(); } });
+
+        // Gallery Sorting Mechanism
+        function sortGallery(criteria) {
+            const grid = document.getElementById('galleryGrid');
+            const items = Array.from(grid.getElementsByClassName('artwork-item'));
+            
+            // Toggle button highlights
+            document.getElementById('sortByYearBtn').classList.toggle('active-sort', criteria === 'year');
+            document.getElementById('sortByColorBtn').classList.toggle('active-sort', criteria === 'color');
+
+            items.sort((a, b) => {
+                if (criteria === 'year') {
+                    // Sort primarily by Year (Descending)
+                    const yearA = parseInt(a.getAttribute('data-year')) || 0;
+                    const yearB = parseInt(b.getAttribute('data-year')) || 0;
+                    if (yearB !== yearA) return yearB - yearA;
+                    
+                    // Fall back to original backend color index loop order if years are identical
+                    return parseInt(a.getAttribute('data-index')) - parseInt(b.getAttribute('data-index'));
+                } else if (criteria === 'color') {
+                    // Sort primarily alphabetically/grouped by Color Tag Value
+                    const colorA = a.getAttribute('data-color').toLowerCase();
+                    const colorB = b.getAttribute('data-color').toLowerCase();
+                    if (colorA !== colorB) return colorA.localeCompare(colorB);
+                    
+                    // Fall back to newest year first if color strings match
+                    const yearA = parseInt(a.getAttribute('data-year')) || 0;
+                    const yearB = parseInt(b.getAttribute('data-year')) || 0;
+                    return yearB - yearA;
+                }
+            });
+
+            // Clear and append sorted nodes back into the DOM grid
+            grid.innerHTML = '';
+            items.forEach(item => grid.appendChild(item));
+        }
     </script>
 </body>
 </html>
