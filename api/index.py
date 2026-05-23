@@ -314,6 +314,22 @@ async def update_image(
         logger.error(f"Neocities update failed after edit: {e.detail}")
         return JSONResponse(status_code=500, content={"message": "Image updated, but Neocities update failed.", "error": e.detail})
 
+@api_router.post("/api/neocities-sort")
+async def set_neocities_sort(
+    sort_by: str = Form(...),
+    db: Session = Depends(get_db),
+    _=Depends(get_current_user)
+):
+    valid_sorts = ["year", "color", "year_color"]
+    if sort_by not in valid_sorts:
+        raise HTTPException(status_code=400, detail=f"Invalid sort. Must be one of: {', '.join(valid_sorts)}")
+    
+    try:
+        message = update_neocities_gallery(db, sort_by)
+        return {"message": message, "sort_by": sort_by}
+    except HTTPException as e:
+        raise e
+
 @api_router.post("/api/update-gallery")
 async def manual_gallery_update_endpoint(db: Session = Depends(get_db), _=Depends(get_current_user)):
     try:
