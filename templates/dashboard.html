@@ -126,7 +126,14 @@
             </div>
             
             <div class="image-card">
-                <h2>🌙 Art Collection (<span id="imageCount">0</span>)</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2 style="margin-bottom: 0;">🌙 Art Collection (<span id="imageCount">0</span>)</h2>
+                    <select id="sortDropdown" style="width: auto; padding: 0.8rem 1rem;">
+                        <option value="uploaded">Sort: Recently Uploaded</option>
+                        <option value="year">Sort: Year Made (Newest First)</option>
+                        <option value="color">Sort: By Color</option>
+                    </select>
+                </div>
                 <div class="image-gallery" id="imageGallery">
                     <!-- Images will be populated by JS -->
                 </div>
