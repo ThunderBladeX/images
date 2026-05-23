@@ -113,29 +113,18 @@ def upload_to_supabase(file_content: bytes, filename: str, content_type: str) ->
         logger.error(f"Failed to upload to Supabase: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to upload to Supabase: {str(e)}")
 
-def update_neocities_gallery(db: Session, sort_by: str = "year_color"):
+def update_neocities_gallery(db: Session):
     if not NEOCITIES_USERNAME or not NEOCITIES_API_KEY:
         logger.warning("Neocities credentials not set. Skipping update.")
         return "Neocities credentials not set. Skipped update."
-    logger.info(f"Starting Neocities gallery update with sorting: {sort_by}...")
+    logger.info("Starting Neocities gallery update with custom sorting...")
     try:
-        logger.info("Fetching images for Neocities gallery update...")
-        
-        if sort_by == "year":
-            images = db.query(ImageRecord).order_by(ImageRecord.year_made.desc()).all()
-        elif sort_by == "color":
-            color_order_case = case(
-                {color.value: i for i, color in enumerate(COLOR_ORDER)},
-                value=ImageRecord.color_tag
-            )
-            images = db.query(ImageRecord).order_by(color_order_case, ImageRecord.year_made.desc()).all()
-        else:
-            color_order_case = case(
-                {color.value: i for i, color in enumerate(COLOR_ORDER)},
-                value=ImageRecord.color_tag
-            )
-            images = db.query(ImageRecord).order_by(ImageRecord.year_made.desc(), color_order_case).all()
-        
+        logger.info("Fetching images for Neocities gallery update with custom sorting...")
+        color_order_case = case(
+            {color.value: i for i, color in enumerate(COLOR_ORDER)},
+            value=ImageRecord.color_tag
+        )
+        images = db.query(ImageRecord).order_by(ImageRecord.year_made.desc(), color_order_case).all()
         logger.info(f"Found {len(images)} images. Generating HTML...")
 
         template = templates.get_template("neocities_gallery_template.html")
@@ -180,21 +169,8 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return {"access_token": access_token, "token_type": "bearer"}
 
 @api_router.get("/api/images")
-async def get_images(
-    sort_by: str = "uploaded",
-    db: Session = Depends(get_db), 
-    _=Depends(get_current_user)
-):
-    if sort_by == "year":
-        images = db.query(ImageRecord).order_by(ImageRecord.year_made.desc()).all()
-    elif sort_by == "color":
-        color_order_case = case(
-            {color.value: i for i, color in enumerate(COLOR_ORDER)},
-            value=ImageRecord.color_tag
-        )
-        images = db.query(ImageRecord).order_by(color_order_case, ImageRecord.year_made.desc()).all()
-    else:
-        images = db.query(ImageRecord).order_by(ImageRecord.uploaded_at.desc()).all()
+async def get_images(db: Session = Depends(get_db), _=Depends(get_current_user)):
+    images = db.query(ImageRecord).order_by(ImageRecord.uploaded_at.desc()).all()
     return images
 
 @api_router.post("/api/upload")
@@ -244,7 +220,7 @@ async def upload_image(
     db.commit()
     
     try:
-        update_neocities_gallery(db, "year_color")
+        update_neocities_gallery(db)
         return {"message": "Image uploaded and gallery updated."}
     except HTTPException as e:
         logger.error(f"Neocities update failed after upload: {e.detail}")
@@ -266,7 +242,7 @@ async def delete_image(image_id: int, db: Session = Depends(get_db), _=Depends(g
     db.commit()
     
     try:
-        update_neocities_gallery(db, "year_color")
+        update_neocities_gallery(db)
         return {"message": "Image deleted and Neocities updated."}
     except HTTPException as e:
         return JSONResponse(status_code=500, content={"message": "Image deleted, but Neocities update failed.", "error": e.detail})
@@ -308,27 +284,11 @@ async def update_image(
     db.commit()
 
     try:
-        update_neocities_gallery(db, "year_color")
+        update_neocities_gallery(db)
         return {"message": "Image details updated and gallery refreshed."}
     except HTTPException as e:
         logger.error(f"Neocities update failed after edit: {e.detail}")
         return JSONResponse(status_code=500, content={"message": "Image updated, but Neocities update failed.", "error": e.detail})
-
-@api_router.post("/api/neocities-sort")
-async def set_neocities_sort(
-    sort_by: str = Form(...),
-    db: Session = Depends(get_db),
-    _=Depends(get_current_user)
-):
-    valid_sorts = ["year", "color", "year_color"]
-    if sort_by not in valid_sorts:
-        raise HTTPException(status_code=400, detail=f"Invalid sort. Must be one of: {', '.join(valid_sorts)}")
-    
-    try:
-        message = update_neocities_gallery(db, sort_by)
-        return {"message": message, "sort_by": sort_by}
-    except HTTPException as e:
-        raise e
 
 @api_router.post("/api/update-gallery")
 async def manual_gallery_update_endpoint(db: Session = Depends(get_db), _=Depends(get_current_user)):
