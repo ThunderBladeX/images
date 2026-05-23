@@ -244,7 +244,7 @@ async def upload_image(
     db.commit()
     
     try:
-        update_neocities_gallery(db)
+        update_neocities_gallery(db, "year_color")
         return {"message": "Image uploaded and gallery updated."}
     except HTTPException as e:
         logger.error(f"Neocities update failed after upload: {e.detail}")
@@ -266,7 +266,7 @@ async def delete_image(image_id: int, db: Session = Depends(get_db), _=Depends(g
     db.commit()
     
     try:
-        update_neocities_gallery(db)
+        update_neocities_gallery(db, "year_color")
         return {"message": "Image deleted and Neocities updated."}
     except HTTPException as e:
         return JSONResponse(status_code=500, content={"message": "Image deleted, but Neocities update failed.", "error": e.detail})
@@ -308,7 +308,7 @@ async def update_image(
     db.commit()
 
     try:
-        update_neocities_gallery(db)
+        update_neocities_gallery(db, "year_color")
         return {"message": "Image details updated and gallery refreshed."}
     except HTTPException as e:
         logger.error(f"Neocities update failed after edit: {e.detail}")
