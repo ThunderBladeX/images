@@ -38,6 +38,8 @@
         body { background-color: var(--porch-swing); color: var(--campfire-smoke); font-family: 'Courier New', monospace; margin: 0; padding: 0; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23F5E6E3" /><path d="M0,0 L100,100 M100,0 L0,100" stroke="%23C8A2C810" stroke-width="0.5"/></svg>'); overflow-x: hidden; }
         body::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--vintage-yellow), var(--copper-penny), var(--cherry-cola), var(--copper-penny), var(--vintage-yellow)); opacity: 0.6; border-radius: 0 0 4px 4px; }
         .container { max-width: 900px; margin: 0 auto; padding: 20px; position: relative; width: 100%; box-sizing: border-box; }
+        
+        /* Navigation & Header */
         .main-nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-top: 20px }
         .nav-link { color: var(--copper-penny); text-decoration: none; padding: 8px 20px; border: 2px solid transparent; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); font-size: 0.95em; position: relative; font-weight: 500; border-radius: 25px; background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1)); }
         .nav-link::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(45deg, var(--wildflower-lilac), var(--copper-penny)); border-radius: 25px; opacity: 0; transition: opacity 0.4s ease; z-index: -1; }
@@ -48,6 +50,7 @@
         .nav-link.active-link:hover::after { width: 0%; }
         .heart-glasses { display: inline-block; transform: rotate(10deg); font-size: 1.2em; color: var(--cherry-cola); animation: heartBeat 2s ease-in-out infinite; }
         @keyframes heartBeat { 0%, 100% { transform: rotate(10deg) scale(1); } 50% { transform: rotate(10deg) scale(1.1); } }
+        
         header { text-align: center; padding-top: 20px; padding-bottom: 30px; margin: 0 auto 30px auto; border-bottom: 3px dotted var(--copper-penny); position: relative; border-radius: 15px; width: 100%; max-width: 100%; box-sizing: border-box; background: linear-gradient(135deg, #FFF2EF, var(--porch-swing)); }
         header p { padding-left: 30px; padding-right: 30px; }
         header::after { content: "✹ ✸ ✶ ✸ ✹"; position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); width:140px; height: 35px; background-color: var(--porch-swing); border-radius: 15px; box-shadow: 0 0 5px var(--porch-swing); display: flex; align-items: center; justify-content: center; font-family: 'Courier New', monospace; font-size: 20px; color: #AD6A5A; line-height: 1; }
@@ -58,17 +61,18 @@
         a::after { content: ''; position: absolute; bottom: -2px; left: 0; width:0; height: 2px; background: linear-gradient(90deg, var(--copper-penny), var(--cherry-cola)); transition: width 0.3s ease; }
         a:hover::after { width: 100%; }
         
-        /* New Sort Controls Styling */
-        .sort-container { text-align: center; margin-bottom: 25px; font-size: 0.9em; color: var(--campfire-smoke); }
-        .sort-btn { background: var(--warm-beige); border: 1px dashed var(--copper-penny); color: var(--campfire-smoke); padding: 5px 15px; margin: 0 5px; border-radius: 15px; cursor: pointer; font-family: 'Courier New', monospace; transition: all 0.3s ease; }
-        .sort-btn:hover { background: var(--porch-swing); color: var(--cherry-cola); }
-        .sort-btn.active-sort { background: var(--cherry-cola); color: var(--porch-swing); border-style: solid; box-shadow: 0 2px 5px rgba(139, 62, 62, 0.2); }
-
+        /* Animations & Utilities */
         .skating-animation { position: fixed; bottom: 10px; left: -100px; animation: skate 15s linear infinite; z-index: 101; font-size: 2em; white-space: nowrap; }
         .skating-animation span { margin-right: 0.5em; }
         @keyframes skate { 0% { left: -100px; } 100% { left: 100vw; } }
-        footer { position: relative; margin-top: 30px; text-align: center; padding: 20px; border-top: 2px solid var(--copper-penny); font-size: 0.8em; border-radius: 15px 15px 0 0; color: var(--campfire-smoke);background: linear-gradient(135deg, var(--porch-swing), #FFF2EF); }
-        footer::before { content: "❋"; position: absolute; top: -17px; left: 50%; transform:translateX(-50%); background: var(--porch-swing); padding: 5px 10px; color: var(--wildflower-lilac); font-size: 1.2em; border-radius: 30px; box-shadow: 0 0 10px var(--porch-swing); }
+        
+        /* Sorting Controls */
+        .gallery-controls { text-align: center; margin-bottom: 30px; padding: 15px; background: linear-gradient(135deg, rgba(255,242,239,0.7), rgba(245,230,227,0.7)); border-radius: 15px; border: 1px dashed var(--wildflower-lilac); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .gallery-controls label { font-family: 'Americana BT', 'Courier New', cursive; color: var(--cherry-cola); font-size: 1.1em; margin-right: 10px; }
+        .gallery-controls select { padding: 8px 15px; border-radius: 20px; border: 2px solid var(--copper-penny); background-color: var(--polaroid-bg); color: var(--text-main); font-family: 'Courier New', monospace; font-size: 0.9em; cursor: pointer; outline: none; transition: all 0.3s ease; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23AD6A5A%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 10px top 50%; background-size: 10px auto; padding-right: 30px; }
+        .gallery-controls select:hover, .gallery-controls select:focus { border-color: var(--cherry-cola); box-shadow: 0 0 8px rgba(139, 62, 62, 0.2); }
+
+        /* Gallery Grid */
         .gallery-intro { text-align: center; margin-bottom: 30px; font-size: 1.1em; color: var(--campfire-smoke); font-style: italic; }
         .gallery-grid { display: flex; flex-wrap: wrap; gap: 25px; justify-content: center; padding: 10px 0; }
         .artwork-item { background: white; padding: 15px; border: 1px solid var(--wildflower-lilac); border-radius: 5px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 0 0 5px var(--porch-swing); width: calc(33.333% - 30px); min-width: 250px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease; }
@@ -79,11 +83,20 @@
         .artwork-credit { font-size: 0.85em; }
         .artwork-date { font-size: 0.75em; color: var(--sun-denim); font-style: italic; }
         .cherry-stain { display: inline-block; width: 15px; height: 15px; background: var(--cherry-cola); border-radius: 50%; opacity: 0.5; margin: 0 5px; }
+        
+        /* Modal */
         .modal { display: none; position: fixed; z-index: 1001; padding-top: 50px; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.85); }
         .modal-content { margin: auto; display: block; max-width: 80%; max-height: 80vh; }
         .modal-caption { margin: 15px auto; display: block; width: 80%; max-width: 700px; text-align: center; color: var(--porch-swing); font-size: 1.1em; font-family: 'Americana BT', 'Courier New', cursive; }
         .close-modal { position: absolute; top: 15px; right: 35px; color: #f1f1f1; font-size: 40px; font-weight: bold; transition: 0.3s; cursor: pointer; }
         .close-modal:hover, .close-modal:focus { color: var(--wildflower-lilac); text-decoration: none; }
+        
+        /* Sensitive Content */
+        .sensitive-content-wrapper { position: relative; width: 100%; cursor: pointer; overflow: hidden; border-radius: 3px; }
+        .sensitive-content-wrapper img { filter: blur(15px); transition: filter 0.3s ease-in-out; }
+        .sensitive-content-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--cherry-cola); background-color: rgba(245, 230, 227, 0.85); padding: 10px 20px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; font-family: 'Americana BT', sans-serif; text-align: center; pointer-events: none; transition: opacity 0.3s ease-in-out; border: 2px solid var(--cherry-cola-blush); }
+        
+        /* Media Queries */
         @media (max-width: 768px) {
             .artwork-item { width: calc(50% - 20px); }
             .container::before { height: 4px; }
@@ -94,9 +107,9 @@
             .artwork-item { width: calc(100% - 20px); min-width: unset; }
             .modal-content { max-width: 95%; }
         }
-        .sensitive-content-wrapper { position: relative; width: 100%; cursor: pointer; overflow: hidden; border-radius: 3px; }
-        .sensitive-content-wrapper img { filter: blur(15px); transition: filter 0.3s ease-in-out; }
-        .sensitive-content-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--cherry-cola); background-color: rgba(245, 230, 227, 0.85); padding: 10px 20px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; font-family: 'Americana BT', sans-serif; text-align: center; pointer-events: none; transition: opacity 0.3s ease-in-out; border: 2px solid var(--cherry-cola-blush); }
+
+        footer { position: relative; margin-top: 30px; text-align: center; padding: 20px; border-top: 2px solid var(--copper-penny); font-size: 0.8em; border-radius: 15px 15px 0 0; color: var(--campfire-smoke);background: linear-gradient(135deg, var(--porch-swing), #FFF2EF); }
+        footer::before { content: "❋"; position: absolute; top: -17px; left: 50%; transform:translateX(-50%); background: var(--porch-swing); padding: 5px 10px; color: var(--wildflower-lilac); font-size: 1.2em; border-radius: 30px; box-shadow: 0 0 10px var(--porch-swing); }
     </style>
 </head>
 <body>
@@ -118,23 +131,34 @@
 
         <main>
             <section id="art-gallery-section">
-                <div class="sort-container">
-                    Sort by: 
-                    <button class="sort-btn active-sort" id="sortByYearBtn" onclick="sortGallery('year')">Year</button>
-                    <button class="sort-btn" id="sortByColorBtn" onclick="sortGallery('color')">Color Tag</button>
+                
+                <div class="gallery-controls">
+                    <label for="sort-select">Sort Gallery By:</label>
+                    <select id="sort-select">
+                        <option value="default">Default (Year & Color)</option>
+                        <option value="date-desc">Date (Newest First)</option>
+                        <option value="date-asc">Date (Oldest First)</option>
+                        <option value="color">Color Category</option>
+                    </select>
                 </div>
 
-                <div class="gallery-grid" id="galleryGrid">
+                <div class="gallery-grid" id="gallery-grid">
                     
                     {% for image in images %}
-                    <div class="artwork-item" data-year="{{ image.year_made }}" data-color="{{ image.color_tag.value }}" data-index="{{ loop.index0 }}">
+                    <div class="artwork-item"
+                         data-year="{{ image.year_made }}"
+                         data-month="{{ image.month_made or 0 }}"
+                         data-day="{{ image.day_made or 0 }}"
+                         data-color="{{ image.color_tag.value | default(image.color_tag) }}"
+                         data-index="{{ loop.index0 }}">
+                        
                         {% if image.is_sensitive %}
-                        <div class="sensitive-content-wrapper" onclick="openModal('{{ image.supabase_url }}', '{{ image.title | e }}', {{ image.alt_text | tojson | replace('\"', '"') | safe }})">
+                        <div class="sensitive-content-wrapper" onclick="openModal('{{ image.supabase_url }}', this.alt, {{ image.alt_text | tojson | replace('\"', '"') | safe }})">
                             <img src="{{ image.supabase_url }}" alt="{{ image.title | e }}">
                             <div class="sensitive-content-overlay">18+</div>
                         </div>
                         {% else %}
-                        <img src="{{ image.supabase_url }}" alt="{{ image.title | e }}" onclick="openModal('{{ image.supabase_url }}', '{{ image.title | e }}', {{ image.alt_text | tojson | replace('\"', '"') | safe }})">
+                        <img src="{{ image.supabase_url }}" alt="{{ image.title | e }}" onclick="openModal('{{ image.supabase_url }}', this.alt, {{ image.alt_text | tojson | replace('\"', '"') | safe }})">
                         {% endif %}
                         <h3 class="artwork-title">{{ image.title }}</h3>
                         {% if image.description %}
@@ -162,8 +186,12 @@
         <img class="modal-content" id="modalImage">
         <div id="caption" class="modal-caption"></div>
     </div>
+    
     <script>
+        // Background Sparkles
         document.addEventListener('DOMContentLoaded', function() { setInterval(function() { const sparkle = document.createElement('div'); sparkle.innerHTML = '✨'; sparkle.style.position = 'fixed'; sparkle.style.left = Math.random() * 100 + 'vw'; sparkle.style.top = Math.random() * 100 + 'vh'; sparkle.style.fontSize = (Math.random() * 10 + 10) + 'px'; sparkle.style.opacity = '0'; sparkle.style.transition = 'all 1s ease'; sparkle.style.pointerEvents = 'none'; sparkle.style.zIndex = '999'; document.body.appendChild(sparkle); setTimeout(() => { sparkle.style.opacity = '0.8'; sparkle.style.transform = `translate(${Math.random()*20-10}px, ${Math.random()*20-10}px)rotate(${Math.random()*90-45}deg)`; }, 100); setTimeout(() => { sparkle.style.opacity = '0'; }, 1500); setTimeout(() => { if(document.body.contains(sparkle)) { document.body.removeChild(sparkle); } }, 2500); }, 3000); });
+        
+        // Modal Logic
         var modal = document.getElementById("myModal");
         var modalImg = document.getElementById("modalImage");
         var captionText = document.getElementById("caption");
@@ -172,41 +200,67 @@
         window.onclick = function(event) { if (event.target == modal) { closeModal(); } }
         document.addEventListener('keydown', function(event) { if (event.key === "Escape") { closeModal(); } });
 
-        // Gallery Sorting Mechanism
-        function sortGallery(criteria) {
-            const grid = document.getElementById('galleryGrid');
-            const items = Array.from(grid.getElementsByClassName('artwork-item'));
-            
-            // Toggle button highlights
-            document.getElementById('sortByYearBtn').classList.toggle('active-sort', criteria === 'year');
-            document.getElementById('sortByColorBtn').classList.toggle('active-sort', criteria === 'color');
+        // NEW SORTING LOGIC
+        document.addEventListener('DOMContentLoaded', function() {
+            const sortSelect = document.getElementById('sort-select');
+            const galleryGrid = document.getElementById('gallery-grid');
+            const items = Array.from(galleryGrid.querySelectorAll('.artwork-item'));
 
-            items.sort((a, b) => {
-                if (criteria === 'year') {
-                    // Sort primarily by Year (Descending)
+            // Mirroring the Python ColorTag order for JS sorting
+            const colorOrderMap = {
+                "blushred": 1, "red": 2, "brown": 3, "honeybrown": 4,
+                "orange": 5, "softorange": 6, "lightyellow": 7, "yellow": 8,
+                "green": 9, "sagegreen": 10, "skyblue": 11, "blue": 12,
+                "indigo": 13, "violet": 14, "magenta": 15, "pink": 16,
+                "white": 17, "gray": 18, "darkgray": 19, "black": 20
+            };
+
+            sortSelect.addEventListener('change', function() {
+                const sortType = this.value;
+
+                items.sort((a, b) => {
                     const yearA = parseInt(a.getAttribute('data-year')) || 0;
                     const yearB = parseInt(b.getAttribute('data-year')) || 0;
-                    if (yearB !== yearA) return yearB - yearA;
                     
-                    // Fall back to original backend color index loop order if years are identical
-                    return parseInt(a.getAttribute('data-index')) - parseInt(b.getAttribute('data-index'));
-                } else if (criteria === 'color') {
-                    // Sort primarily alphabetically/grouped by Color Tag Value
-                    const colorA = a.getAttribute('data-color').toLowerCase();
-                    const colorB = b.getAttribute('data-color').toLowerCase();
-                    if (colorA !== colorB) return colorA.localeCompare(colorB);
+                    const monthA = parseInt(a.getAttribute('data-month')) || 0;
+                    const monthB = parseInt(b.getAttribute('data-month')) || 0;
                     
-                    // Fall back to newest year first if color strings match
-                    const yearA = parseInt(a.getAttribute('data-year')) || 0;
-                    const yearB = parseInt(b.getAttribute('data-year')) || 0;
-                    return yearB - yearA;
-                }
+                    const dayA = parseInt(a.getAttribute('data-day')) || 0;
+                    const dayB = parseInt(b.getAttribute('data-day')) || 0;
+                    
+                    const colorA = colorOrderMap[a.getAttribute('data-color')] || 99;
+                    const colorB = colorOrderMap[b.getAttribute('data-color')] || 99;
+                    
+                    const originalIndexA = parseInt(a.getAttribute('data-index'));
+                    const originalIndexB = parseInt(b.getAttribute('data-index'));
+
+                    if (sortType === 'date-desc') {
+                        if (yearB !== yearA) return yearB - yearA;
+                        if (monthB !== monthA) return monthB - monthA;
+                        return dayB - dayA;
+                    } 
+                    else if (sortType === 'date-asc') {
+                        if (yearA !== yearB) return yearA - yearB;
+                        if (monthA !== monthB) return monthA - monthB;
+                        return dayA - dayB;
+                    } 
+                    else if (sortType === 'color') {
+                        if (colorA !== colorB) return colorA - colorB;
+                        // Fallback to date if colors match
+                        if (yearB !== yearA) return yearB - yearA;
+                        return monthB - monthA; 
+                    } 
+                    else { 
+                        // Default: Revert to the original Jinja loop index generated by the Python backend
+                        return originalIndexA - originalIndexB;
+                    }
+                });
+
+                // Clear the grid and append sorted items
+                galleryGrid.innerHTML = '';
+                items.forEach(item => galleryGrid.appendChild(item));
             });
-
-            // Clear and append sorted nodes back into the DOM grid
-            grid.innerHTML = '';
-            items.forEach(item => grid.appendChild(item));
-        }
+        });
     </script>
 </body>
 </html>
