@@ -126,14 +126,7 @@
             </div>
             
             <div class="image-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                    <h2 style="margin-bottom: 0;">🌙 Art Collection (<span id="imageCount">0</span>)</h2>
-                    <select id="sortDropdown" style="width: auto; padding: 0.8rem 1rem;">
-                        <option value="uploaded">Sort: Recently Uploaded</option>
-                        <option value="year">Sort: Year Made (Newest First)</option>
-                        <option value="color">Sort: By Color</option>
-                    </select>
-                </div>
+                <h2>🌙 Art Collection (<span id="imageCount">0</span>)</h2>
                 <div class="image-gallery" id="imageGallery">
                     <!-- Images will be populated by JS -->
                 </div>
@@ -430,18 +423,13 @@
                 block: 'start' 
             });
         }
-
-        document.getElementById('sortDropdown').addEventListener('change', async (e) => {
-            const sortBy = e.target.value;
-            await fetchImages(sortBy);
-        });
-
-        async function fetchImages(sortBy = 'uploaded') {
+        
+        async function fetchImages() {
             isLoading = true;
             renderImages();
             
             try {
-                const response = await fetchWithAuth(`/api/images?sort_by=${sortBy}`);
+                const response = await fetchWithAuth('/api/images');
                 if (!response.ok) throw new Error('Failed to fetch images.');
                 allImages = await response.json();
                 totalImages = allImages.length;
